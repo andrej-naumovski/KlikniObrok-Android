@@ -1,7 +1,7 @@
 # KlikniObrok.mk
 ## Mobile-based application for standardized order systems in bars and restaurants.
 
-## Rules for pushing commits
+### Rules for pushing commits
 * All initial code commits go in ***dev*** branch
 * Pull requests for ***staging*** are made only after ***dev*** branch has been confirmed working
 * Pull requests for ***production*** are made only after ***staging*** branch has been tested
