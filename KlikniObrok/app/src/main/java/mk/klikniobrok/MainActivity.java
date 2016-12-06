@@ -1,9 +1,18 @@
 package mk.klikniobrok;
 
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
+import android.view.Display;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import mk.klikniobrok.fragments.LoginFragment;
@@ -14,12 +23,15 @@ import mk.klikniobrok.fragments.listeners.TypefaceChangeListener;
 import mk.klikniobrok.fragments.listeners.UserManagementListener;
 import mk.klikniobrok.models.User;
 
+import static android.support.v7.appcompat.R.styleable.View;
+
 public class MainActivity extends AppCompatActivity implements TypefaceChangeListener, UserManagementListener, OnFragmentChangeListener {
     private User user;
     private LoginFragment loginFragment;
     private RegisterFragmentOne registerFragmentOne;
     private RegisterFragmentTwo registerFragmentTwo;
     private AppCompatImageView logo;
+    private FrameLayout container;
 
 
     @Override
@@ -29,6 +41,12 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
 
         logo = (AppCompatImageView) findViewById(R.id.logo);
         logo.setAdjustViewBounds(true);
+
+        container = (FrameLayout) findViewById(R.id.container);
+        container.setVisibility(android.view.View.INVISIBLE);
+
+        splashScreenAnimation(logo);
+        inOpacityAnimation(container);
 
         loginFragment = new LoginFragment();
         registerFragmentOne = new RegisterFragmentOne();
@@ -87,5 +105,31 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, loginFragment).commit();
             }
         }
+    }
+
+    public void splashScreenAnimation(AppCompatImageView view) {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        TranslateAnimation animation = new TranslateAnimation(
+                view.getX(),
+                view.getX(),
+                (height - view.getHeight()) / 4,
+                view.getY());
+        animation.setDuration(750);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setStartOffset(1000);
+        view.startAnimation(animation);
+    }
+
+    public void inOpacityAnimation(View view) {
+        AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
+        animation.setDuration(750);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setStartOffset(1200);
+        view.startAnimation(animation);
+        view.setVisibility(android.view.View.VISIBLE);
     }
 }
