@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/PrimaryTextWhite"
+        android:textSize="24sp"
+        android:text="@string/yourLocationIs"
+        android:id="@+id/yourLocationTextView"/>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="0dp"
+        android:elevation="3dp"
+        android:layout_below="@id/yourLocationTextView"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/LogoImageView"
+                android:src="@drawable/publicroom"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/PrimaryTextBlack"
+                android:text="Public Room"
+                android:textSize="24sp"
+                android:id="@+id/titleTextView"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/LogoImageView"
+                android:layout_toEndOf="@id/LogoImageView"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SecondaryTextBlack"
+                android:text="+389 2 609 2650"
+                android:textSize="16sp"
+                android:id="@+id/numberTextView"
+                android:layout_below="@id/titleTextView"
+                android:layout_toRightOf="@id/LogoImageView"
+                android:layout_toEndOf="@id/LogoImageView"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/PrimaryTextBlack"
+                android:text="50 Divizija 22"
+                android:textSize="16sp"
+                android:id="@+id/addressTextView"
+                android:layout_below="@id/numberTextView"
+                android:layout_toRightOf="@id/LogoImageView"
+                android:layout_toEndOf="@id/LogoImageView"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/PrimaryTextBlack"
+                android:text="Скопје, Македонија"
+                android:textSize="16sp"
+                android:id="@+id/cityTextView"
+                android:layout_below="@id/addressTextView"
+                android:layout_toRightOf="@id/LogoImageView"
+                android:layout_toEndOf="@id/LogoImageView"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp"
+                android:text="ОВДЕ СУМ"
+                android:id="@+id/imHereTextView"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/cityTextView"
+                android:layout_marginTop="24dp"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/PrimaryTextBlack"
+                android:text="ДРУГА ЛОКАЦИЈА"
+                android:textSize="12sp"
+                android:id="@+id/anotherLocationTextView"
+                android:layout_toLeftOf="@id/imHereTextView"
+                android:layout_toStartOf="@id/imHereTextView"
+                android:layout_below="@id/cityTextView"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="24dp"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/otherLocations"
+                android:textSize="20sp"
+                android:id="@+id/otherLocationsTextView"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/anotherLocationTextView"
+                android:layout_marginTop="16dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:isScrollContainer="false"
+                android:id="@+id/recyclerView"
+                android:padding="8dp"
+                android:layout_below="@id/otherLocationsTextView"
+                android:layout_marginTop="8dp">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

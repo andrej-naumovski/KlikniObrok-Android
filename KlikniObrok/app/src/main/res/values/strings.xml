@@ -1,3 +1,20 @@
 <resources>
-    <string name="app_name">KlikniObrok</string>
+    <string name="app_name">Кликни Оброк</string>
+    <string name="forgotPassword"><u>Заборавена лозинка?</u></string>
+    <string name="NoAccountText"><u>Немаш корисничка сметка? <b>Регистрирај се</b></u></string>
+    <string name="loginButtonText">Најави се</string>
+    <string name="fbLoginButtonText">Најави се со facebook</string>
+    <string name="usernameHint">Корисничко име</string>
+    <string name="passwordHint">Лозинка</string>
+    <string name="firstName">Име</string>
+    <string name="lastName">Презиме</string>
+    <string name="userNameRegister">Корисничко име</string>
+    <string name="next">Следно</string>
+    <string name="emailHint">Email адреса</string>
+    <string name="repeatPassword">Повтори лозинка</string>
+    <string name="register">Регистрирај се</string>
+    <string name="alreadyRegistered"><u>Веќе си регистриран? <b>Најави се</b></u></string>
+    <string name="gettingLocation">Проверка на локација</string>
+    <string name="yourLocationIs"><i>Вашата локација е</i></string>
+    <string name="otherLocations"><i>Други локации</i></string>
 </resources>
