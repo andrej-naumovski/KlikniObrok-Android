@@ -1,5 +1,6 @@
 package mk.klikniobrok;
 
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     @Override
     public void login(String username, String password) {
         //TODO: Implement login functionality
+        startActivity(new Intent(MainActivity.this, LocationActivity.class));
     }
 
     @Override
