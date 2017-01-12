@@ -1,5 +1,7 @@
 package mk.klikniobrok.models;
 
+import java.util.Date;
+
 /**
  * Created by gjorgjim on 12/6/16.
  */
@@ -10,17 +12,24 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private int enabled;
+    private java.util.Date dateCreated;
+    private java.util.Date lastUsed;
 
     public User() {
 
     }
 
-    public User(String firstName, String lastName, String username, String email, String password) {
+    public User(String firstName, String lastName, String username, String email, String password,
+                int enabled, java.util.Date dateCreated, java.util.Date lastUsed) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.enabled = enabled;
+        this.dateCreated = dateCreated;
+        this.lastUsed = lastUsed;
     }
 
     public String getFirstName() {
@@ -63,7 +72,27 @@ public class User {
         this.password = password;
     }
 
-    public void register() {
-        //TODO: Implement register functionality
+    public int getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(int enabled) {
+        this.enabled = enabled;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getLastUsed() {
+        return lastUsed;
+    }
+
+    public void setLastUsed(Date lastUsed) {
+        this.lastUsed = lastUsed;
     }
 }

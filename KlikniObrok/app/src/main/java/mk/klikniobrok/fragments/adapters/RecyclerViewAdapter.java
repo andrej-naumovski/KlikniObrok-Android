@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import mk.klikniobrok.R;
+import mk.klikniobrok.models.Restaurant;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  */
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private List<Pair<String, String>> array;
+    private List<Restaurant> array;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View view;
@@ -26,7 +27,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public RecyclerViewAdapter(List<Pair<String, String>> array) {
+    public RecyclerViewAdapter(List<Restaurant> array) {
        // this.array = new ArrayList<>();
         this.array = array;
     }
@@ -47,8 +48,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         // - replace the contents of the view with that element
         AppCompatTextView title = (AppCompatTextView) holder.view.findViewById(R.id.recycerViewTitle);
         AppCompatTextView address = (AppCompatTextView) holder.view.findViewById(R.id.recuclerViewAddress);
-        title.setText(array.get(position).first);
-        address.setText(array.get(position).second);
+        title.setText(array.get(position).getName());
+        address.setText(array.get(position).getAddress().getName());
 
     }
 

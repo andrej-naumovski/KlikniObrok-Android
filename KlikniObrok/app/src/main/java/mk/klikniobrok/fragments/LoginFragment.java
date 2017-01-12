@@ -6,6 +6,7 @@ import android.icu.text.DisplayContext;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -39,6 +40,7 @@ public class LoginFragment extends Fragment {
 
         typefaceChangeListener.changeTypeface("fonts/RobotoSlab-Regular.ttf", register, forgotPassword);
 
+
         final TextInputEditText username = (TextInputEditText) view.findViewById(R.id.loginUsername);
         final TextInputEditText password = (TextInputEditText) view.findViewById(R.id.loginPassword);
 
@@ -51,7 +53,12 @@ public class LoginFragment extends Fragment {
                 if(!username.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
                     userManagementListener.login(username.getText().toString(), password.getText().toString());
                 } else {
-
+                    if(username.getText().toString().isEmpty()) {
+                        username.setError("Празно поле");
+                    }
+                    if(password.getText().toString().isEmpty()) {
+                        password.setError("Празно поле");
+                    }
                 }
             }
         });

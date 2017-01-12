@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     public void registerUser(String password, String email) {
         user.setPassword(password);
         user.setEmail(email);
-        user.register();
+//        user.register();
     }
 
     //OnFragmentChangeListener implementation

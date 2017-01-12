@@ -12,12 +12,18 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import mk.klikniobrok.fragments.ProgressBarFragment;
 import mk.klikniobrok.fragments.YourLocationFragment;
 import mk.klikniobrok.fragments.listeners.LocationManagerListener;
 import mk.klikniobrok.fragments.listeners.TypefaceChangeListener;
+import mk.klikniobrok.models.Restaurant;
+import mk.klikniobrok.services.Data;
 
 public class LocationActivity extends AppCompatActivity implements TypefaceChangeListener, LocationManagerListener {
 
@@ -25,7 +31,6 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     private YourLocationFragment yourLocationFragment;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private int numberOfFindLocations = 0;
     private Location currentLocation;
 
     @Override
@@ -86,7 +91,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         } else {
             currentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-            locationManagment();
+            manageLocation();
         }
     }
 
@@ -97,19 +102,17 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 currentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-                locationManagment();
+                manageLocation();
             }
         }
     }
 
-    public void locationManagment() {
-        if(currentLocation != null) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(LocationActivity.this);
-            alert.setTitle("Вашата локација е:");
-            alert.setMessage(currentLocation.getLatitude() + "  " + currentLocation.getLongitude());
-            alert.show();
-        } else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        }
+    public void manageLocation() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, yourLocationFragment).commit();
+    }
+
+    public List<Restaurant> getRestaurants() {
+        List<Restaurant> array = Data.getRestaurantList(currentLocation);
+        return array;
     }
 }
