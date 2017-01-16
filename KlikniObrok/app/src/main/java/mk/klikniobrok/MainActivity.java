@@ -1,8 +1,11 @@
 package mk.klikniobrok;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
@@ -14,6 +17,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import mk.klikniobrok.fragments.LoginFragment;
@@ -22,7 +26,10 @@ import mk.klikniobrok.fragments.RegisterFragmentTwo;
 import mk.klikniobrok.fragments.listeners.OnFragmentChangeListener;
 import mk.klikniobrok.fragments.listeners.TypefaceChangeListener;
 import mk.klikniobrok.fragments.listeners.UserManagementListener;
+import mk.klikniobrok.models.Role;
 import mk.klikniobrok.models.User;
+import mk.klikniobrok.services.AuthenticationService;
+import mk.klikniobrok.services.impl.AuthenticationServiceImpl;
 
 import static android.support.v7.appcompat.R.styleable.View;
 
@@ -33,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     private RegisterFragmentTwo registerFragmentTwo;
     private AppCompatImageView logo;
     private FrameLayout container;
-
+    private AuthenticationService authenticationService = new AuthenticationServiceImpl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +77,8 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     //UserManagementListener implementation
 
     @Override
-    public void login(String username, String password) {
-        //TODO: Implement login functionality
-        startActivity(new Intent(MainActivity.this, LocationActivity.class));
+    public void loginUser(String username, String password) {
+        new Login().execute(username, password);
     }
 
     @Override
@@ -86,7 +92,9 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     public void registerUser(String password, String email) {
         user.setPassword(password);
         user.setEmail(email);
-//        user.register();
+        user.setRole(Role.CUSTOMER);
+        user.setEnabled(1);
+        new Register().execute(user);
     }
 
     //OnFragmentChangeListener implementation
@@ -133,5 +141,51 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         animation.setStartOffset(1200);
         view.startAnimation(animation);
         view.setVisibility(android.view.View.VISIBLE);
+    }
+
+    class Login extends AsyncTask<String, Void, String> {
+        private ProgressDialog spinner = new ProgressDialog(MainActivity.this);
+        @Override
+        protected void onPostExecute(String s) {
+            spinner.dismiss();
+            AlertDialog alert = new AlertDialog.Builder(MainActivity.this).create();
+            alert.setMessage(s);
+            alert.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return authenticationService.login(strings[0], strings[1]);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            spinner.setIndeterminate(true);
+            spinner.setMessage(MainActivity.this.getResources().getString(R.string.loginProgress));
+            spinner.show();
+        }
+    }
+
+    class Register extends AsyncTask<User, Void, String> {
+        private ProgressDialog spinner = new ProgressDialog(MainActivity.this);
+        @Override
+        protected void onPreExecute() {
+            spinner.setIndeterminate(true);
+            spinner.setMessage(MainActivity.this.getResources().getString(R.string.registerProgress));
+            spinner.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            spinner.dismiss();
+            AlertDialog alert = new AlertDialog.Builder(MainActivity.this).create();
+            alert.setMessage(s);
+            alert.show();
+        }
+
+        @Override
+        protected String doInBackground(User... users) {
+            return authenticationService.register(users[0]);
+        }
     }
 }

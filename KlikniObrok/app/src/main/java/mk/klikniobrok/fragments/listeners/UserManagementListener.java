@@ -5,7 +5,7 @@ package mk.klikniobrok.fragments.listeners;
  */
 
 public interface UserManagementListener {
-    void login(String username, String password);
+    void loginUser(String username, String password);
     void saveUserInfo(String firstName, String lastName, String username);
     void registerUser(String password, String email);
 }

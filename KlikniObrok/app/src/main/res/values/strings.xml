@@ -17,4 +17,6 @@
     <string name="gettingLocation">Проверка на локација</string>
     <string name="yourLocationIs"><i>Вашата локација е</i></string>
     <string name="otherLocations"><i>Други локации</i></string>
+    <string name="loginProgress">Се најавувам, Ве молиме почекајте...</string>
+    <string name="registerProgress">Ве молиме почекајте...</string>
 </resources>

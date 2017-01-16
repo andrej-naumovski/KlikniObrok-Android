@@ -51,7 +51,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(!username.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
-                    userManagementListener.login(username.getText().toString(), password.getText().toString());
+                    userManagementListener.loginUser(username.getText().toString(), password.getText().toString());
                 } else {
                     if(username.getText().toString().isEmpty()) {
                         username.setError("Празно поле");

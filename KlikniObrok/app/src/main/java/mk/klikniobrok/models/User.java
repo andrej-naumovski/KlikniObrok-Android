@@ -1,12 +1,13 @@
 package mk.klikniobrok.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by gjorgjim on 12/6/16.
  */
 
-public class User {
+public class User implements Serializable {
     private String firstName;
     private String lastName;
     private String username;
@@ -15,13 +16,14 @@ public class User {
     private int enabled;
     private java.util.Date dateCreated;
     private java.util.Date lastUsed;
+    private Role role;
 
     public User() {
 
     }
 
     public User(String firstName, String lastName, String username, String email, String password,
-                int enabled, java.util.Date dateCreated, java.util.Date lastUsed) {
+                int enabled, java.util.Date dateCreated, java.util.Date lastUsed, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -30,6 +32,7 @@ public class User {
         this.enabled = enabled;
         this.dateCreated = dateCreated;
         this.lastUsed = lastUsed;
+        this.role = role;
     }
 
     public String getFirstName() {
@@ -94,5 +97,13 @@ public class User {
 
     public void setLastUsed(Date lastUsed) {
         this.lastUsed = lastUsed;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

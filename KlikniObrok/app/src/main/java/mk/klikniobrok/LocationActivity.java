@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location currentLocation;
+    private List<Restaurant> array;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +110,17 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     }
 
     public void manageLocation() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, yourLocationFragment).commit();
+        if(currentLocation != null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, yourLocationFragment).commit();
+        } else {
+            Toast.makeText(this, "Локацијата не може да се добие", Toast.LENGTH_SHORT).show();
+            findCurrentLocation();
+        }
+
     }
 
     public List<Restaurant> getRestaurants() {
-        List<Restaurant> array = Data.getRestaurantList(currentLocation);
+        array = Data.getRestaurantList(currentLocation);
         return array;
     }
 }

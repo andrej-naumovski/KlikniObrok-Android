@@ -76,6 +76,8 @@ public class YourLocationFragment extends Fragment {
                     recyclerView.setAdapter(adapter);
                 }
             }
+        } else {
+            //TODO: Exception if array is empty
         }
 
 
