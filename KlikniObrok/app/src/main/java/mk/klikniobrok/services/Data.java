@@ -20,16 +20,16 @@ public class Data {
     public static List<Restaurant> getRestaurantList(Location location) {
         List<Restaurant> array = new ArrayList<>();
         array.add(new Restaurant(0, "Public Room 1", null, null,
-                new Address("lokacija 1", null, null, null, 0),new LatLng(42.002387, 21.407773 )));
-        array.add(new Restaurant(0, "Public Room 1", null, null,
+                new Address("lokacija 1", null, null, null, 0),new LatLng(42.007990, 21.374959)));
+        array.add(new Restaurant(0, "Public Room 2", null, null,
                 new Address("lokacija 1", null, null, null, 0),new LatLng(42.002417, 21.407823 )));
-        array.add(new Restaurant(0, "Public Room 1", null, null,
+        array.add(new Restaurant(0, "Public Room 3", null, null,
                 new Address("lokacija 1", null, null, null, 0),new LatLng(42.002457, 21.407883 )));
-        array.add(new Restaurant(0, "Public Room 1", null, null,
+        array.add(new Restaurant(0, "Public Room 4", null, null,
                 new Address("lokacija 1", null, null, null, 0),new LatLng(42.002497, 21.407903 )));
-        array.add(new Restaurant(0, "Public Room 1", null, null,
+        array.add(new Restaurant(0, "Public Room 5", null, null,
                 new Address("lokacija 1", null, null, null, 0),new LatLng(42.002537, 21.407953 )));
-        array.add(new Restaurant(0, "Public Room 1", null, null,
+        array.add(new Restaurant(0, "Public Room 6", null, null,
                 new Address("lokacija 1", null, null, null, 0),new LatLng(42.002587, 21.407993 )));
 
         Location restLocation = new Location("");

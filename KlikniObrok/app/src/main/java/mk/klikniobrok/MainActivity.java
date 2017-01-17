@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,7 +56,9 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
 
         dbHandler = new DBHandler(this, null, null, 1);
         if(checkIfUserIsLoggedIn()) {
-            startActivity(new Intent(MainActivity.this, LocationActivity.class));
+            Intent intent = new Intent(MainActivity.this, LocationActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
 
         logo = (AppCompatImageView) findViewById(R.id.logo);
@@ -160,14 +163,19 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         protected void onPostExecute(String s) {
             spinner.dismiss();
             // TODO: Check if user is in database
-            if(true) {
+            if(!s.isEmpty()) {
                 Log.d("handler", dbHandler.toString());
                 String splitted[] = s.split("\"");
                 String token = splitted[3];
                 dbHandler.addUserToDB(token);
-                startActivity(new Intent(MainActivity.this, LocationActivity.class));
+                Intent intent = new Intent(MainActivity.this, LocationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             } else {
                 //TODO: Error message if user it is not in database
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
+                dialog.setMessage(s);
+                dialog.show();
             }
         }
 

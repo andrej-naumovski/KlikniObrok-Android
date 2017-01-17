@@ -78,18 +78,22 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_USER + " WHERE 1";
 
-        Cursor c = db.rawQuery(query, null);
-        c.moveToFirst();
-        if(c.getString(c.getColumnIndex(COLUMN_TOKEN)) != null) {
-            db.close();
-            return new UserDB(c.getString(c.getColumnIndex(COLUMN_TOKEN)),
-                    c.getLong(c.getColumnIndex(COLUMN_TIME)));
+        Cursor c = db.rawQuery(query, null);;
+        if (c.moveToFirst()) {
+            if(c.getString(c.getColumnIndex(COLUMN_TOKEN)) != null) {
+                db.close();
+                return new UserDB(c.getString(c.getColumnIndex(COLUMN_TOKEN)),
+                        c.getLong(c.getColumnIndex(COLUMN_TIME)));
 
             }
+            c.close();
+            db.close();
+            return null;
+        }
         c.close();
         db.close();
         return null;
-    }
+        }
 
     public void updateUserDB(String token) {
         deleteUserDB(token);

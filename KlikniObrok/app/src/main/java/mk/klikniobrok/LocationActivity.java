@@ -46,6 +46,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
 
         dbHandler = new DBHandler(this, null, null, 1);
 
+
         progressBarFragment = new ProgressBarFragment();
         yourLocationFragment = new YourLocationFragment();
 
@@ -117,7 +118,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
 
     public void manageLocation() {
         if(currentLocation != null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, yourLocationFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, yourLocationFragment).commitAllowingStateLoss();
         } else {
             Toast.makeText(this, "Локацијата не може да се добие", Toast.LENGTH_SHORT).show();
             findCurrentLocation();
@@ -135,9 +136,9 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         Date currentDate = new Date();
         if(currentDate.getTime() - dbHandler.getUserDB().getTime() > 10800000) {
             dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
-            //TODO: Check if he is in a restaurant
             startActivity(new Intent(LocationActivity.this, MainActivity.class));
         }
+        //TODO: Check if he is in a restaurant
         super.onResume();
     }
 }
