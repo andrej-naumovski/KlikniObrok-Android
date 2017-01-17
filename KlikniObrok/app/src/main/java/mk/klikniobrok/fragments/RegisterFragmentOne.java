@@ -7,9 +7,13 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import mk.klikniobrok.R;
 import mk.klikniobrok.fragments.listeners.OnFragmentChangeListener;
@@ -41,10 +45,24 @@ public class RegisterFragmentOne extends Fragment {
         final TextInputEditText lastName = (TextInputEditText) view.findViewById(R.id.registerLastName);
         final TextInputEditText username = (TextInputEditText) view.findViewById(R.id.registerUsername);
         AppCompatTextView alreadyRegistered = (AppCompatTextView) view.findViewById(R.id.alreadyRegistered);
+        final AppCompatButton nextButton = (AppCompatButton)view.findViewById(R.id.next);
 
         typefaceChangeListener.changeTypeface("fonts/RobotoSlab-Regular.ttf", alreadyRegistered);
 
-        AppCompatButton nextButton = (AppCompatButton)view.findViewById(R.id.next);
+        username.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager inputManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+                    nextButton.callOnClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         typefaceChangeListener.changeTypeface("fonts/Exo2-ExtraLight.otf", nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +73,15 @@ public class RegisterFragmentOne extends Fragment {
                     userManagementListener.saveUserInfo(firstName.getText().toString(), lastName.getText().toString(), username.getText().toString());
                     fragmentChangeListener.onFragmentChanged(RegisterFragmentOne.class, true);
                 } else {
-                    //TODO: Implement error on empty fields
+                    if(firstName.getText().toString().isEmpty()) {
+                        firstName.setError(getResources().getString(R.string.emptyField));
+                    }
+                    if(lastName.getText().toString().isEmpty()) {
+                        lastName.setError(getResources().getString(R.string.emptyField));
+                    }
+                    if(username.getText().toString().isEmpty()) {
+                        username.setError(getResources().getString(R.string.emptyField));
+                    }
                 }
             }
         });

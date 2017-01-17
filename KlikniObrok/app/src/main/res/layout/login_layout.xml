@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/usernameHint"
-            android:theme="@style/MyEditText" />
+            android:theme="@style/MyEditText"
+            android:inputType="text"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -36,7 +37,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/passwordHint"
             android:theme="@style/MyEditText"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"/>
 
     </android.support.design.widget.TextInputLayout>
 

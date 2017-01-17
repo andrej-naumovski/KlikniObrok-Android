@@ -2,6 +2,7 @@ package mk.klikniobrok;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -20,6 +22,9 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Date;
+
+import mk.klikniobrok.database.handler.DBHandler;
 import mk.klikniobrok.fragments.LoginFragment;
 import mk.klikniobrok.fragments.RegisterFragmentOne;
 import mk.klikniobrok.fragments.RegisterFragmentTwo;
@@ -41,11 +46,17 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     private AppCompatImageView logo;
     private FrameLayout container;
     private AuthenticationService authenticationService = new AuthenticationServiceImpl();
+    private DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbHandler = new DBHandler(this, null, null, 1);
+        if(checkIfUserIsLoggedIn()) {
+            startActivity(new Intent(MainActivity.this, LocationActivity.class));
+        }
 
         logo = (AppCompatImageView) findViewById(R.id.logo);
         logo.setAdjustViewBounds(true);
@@ -148,9 +159,16 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         @Override
         protected void onPostExecute(String s) {
             spinner.dismiss();
-            AlertDialog alert = new AlertDialog.Builder(MainActivity.this).create();
-            alert.setMessage(s);
-            alert.show();
+            // TODO: Check if user is in database
+            if(true) {
+                Log.d("handler", dbHandler.toString());
+                String splitted[] = s.split("\"");
+                String token = splitted[3];
+                dbHandler.addUserToDB(token);
+                startActivity(new Intent(MainActivity.this, LocationActivity.class));
+            } else {
+                //TODO: Error message if user it is not in database
+            }
         }
 
         @Override
@@ -187,5 +205,19 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         protected String doInBackground(User... users) {
             return authenticationService.register(users[0]);
         }
+    }
+
+    public boolean checkIfUserIsLoggedIn() {
+        if(dbHandler.getUserDB() != null) {
+            Date date = new Date();
+            if(date.getTime() - dbHandler.getUserDB().getTime() < 10800000) {
+                return true;
+            } else {
+                dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
+                return false;
+            }
+
+        }
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package mk.klikniobrok;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -17,8 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import mk.klikniobrok.database.handler.DBHandler;
 import mk.klikniobrok.fragments.ProgressBarFragment;
 import mk.klikniobrok.fragments.YourLocationFragment;
 import mk.klikniobrok.fragments.listeners.LocationManagerListener;
@@ -34,11 +37,14 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     private LocationListener locationListener;
     private Location currentLocation;
     private List<Restaurant> array;
+    private DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
+
+        dbHandler = new DBHandler(this, null, null, 1);
 
         progressBarFragment = new ProgressBarFragment();
         yourLocationFragment = new YourLocationFragment();
@@ -122,5 +128,16 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     public List<Restaurant> getRestaurants() {
         array = Data.getRestaurantList(currentLocation);
         return array;
+    }
+
+    @Override
+    public void onResume() {
+        Date currentDate = new Date();
+        if(currentDate.getTime() - dbHandler.getUserDB().getTime() > 10800000) {
+            dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
+            //TODO: Check if he is in a restaurant
+            startActivity(new Intent(LocationActivity.this, MainActivity.class));
+        }
+        super.onResume();
     }
 }
