@@ -40,8 +40,14 @@ public class HttpMethods {
             HttpsURLConnection httpConnection = getHttpUrlConnection(connUrl, HTTP_GET);
 
             String line;
-            BufferedReader br = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-            while((line = br.readLine()) != null) {
+            BufferedReader reader;
+            if(httpConnection.getResponseCode() >= HttpsURLConnection.HTTP_OK
+                    && httpConnection.getResponseCode() < HttpsURLConnection.HTTP_BAD_REQUEST) {
+                reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
+            }
+            while((line = reader.readLine()) != null) {
                 response.append(line);
             }
         } catch (Exception e) {
@@ -67,7 +73,13 @@ public class HttpMethods {
             outputStream.close();
 
             String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            BufferedReader reader;
+            if(httpConnection.getResponseCode() >= HttpsURLConnection.HTTP_OK
+                    && httpConnection.getResponseCode() < HttpsURLConnection.HTTP_BAD_REQUEST) {
+                reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
+            }
             while((line = reader.readLine()) != null) {
                 response.append(line);
             }
@@ -100,7 +112,13 @@ public class HttpMethods {
             outputStream.close();
 
             String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            BufferedReader reader;
+            if(httpConnection.getResponseCode() >= HttpsURLConnection.HTTP_OK
+                    && httpConnection.getResponseCode() < HttpsURLConnection.HTTP_BAD_REQUEST) {
+                reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
+            }
             while((line = reader.readLine()) != null) {
                 response.append(line);
             }

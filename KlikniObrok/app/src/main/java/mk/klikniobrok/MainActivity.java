@@ -23,6 +23,9 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 
 import mk.klikniobrok.database.handler.DBHandler;
@@ -162,20 +165,25 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         @Override
         protected void onPostExecute(String s) {
             spinner.dismiss();
-            // TODO: Check if user is in database
-            if(!s.isEmpty()) {
-                Log.d("handler", dbHandler.toString());
-                String splitted[] = s.split("\"");
-                String token = splitted[3];
-                dbHandler.addUserToDB(token);
-                Intent intent = new Intent(MainActivity.this, LocationActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            } else {
-                //TODO: Error message if user it is not in database
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-                dialog.setMessage(s);
-                dialog.show();
+            JSONObject tokenObject;
+            try {
+                tokenObject = new JSONObject(s);
+                String status = tokenObject.getString("responseStatus");
+                if(status.equalsIgnoreCase("SUCCESS")) {
+                    String token = tokenObject.getString("token");
+                    dbHandler.addUserToDB(token);
+                    Intent locationActivity = new Intent(MainActivity.this, LocationActivity.class);
+                    locationActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(locationActivity);
+                } else {
+                    AlertDialog errorDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    errorDialog.setMessage("Грешна комбинација на корисничко име/лозинка, обидете се повторно.");
+                    errorDialog.show();
+                }
+            } catch (JSONException e) {
+                AlertDialog errorDialog = new AlertDialog.Builder(MainActivity.this).create();
+                errorDialog.setMessage("Не може да се воспостави конекција со серверот, Ве молиме обидете се повторно.");
+                errorDialog.show();
             }
         }
 
