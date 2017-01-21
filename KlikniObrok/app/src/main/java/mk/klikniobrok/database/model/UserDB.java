@@ -8,10 +8,12 @@ public class UserDB {
     private int id;
     private String token;
     private long time;
+    private String restaurantName;
 
-    public UserDB(String token, long time) {
+    public UserDB(String token, long time, String restaurantName) {
         this.token = token;
         this.time = time;
+        this.restaurantName = restaurantName;
     }
 
     public int getId() {
@@ -36,5 +38,13 @@ public class UserDB {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
     }
 }

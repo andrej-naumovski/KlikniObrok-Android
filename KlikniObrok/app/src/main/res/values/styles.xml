@@ -8,31 +8,31 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="PrimaryTextBlack" >
+    <style name="PrimaryTextBlack">
         <item name="android:textColor">#000000</item>
         <item name="android:alpha">0.87</item>
     </style>
 
-    <style name="SecondaryTextBlack" >
+    <style name="SecondaryTextBlack">
         <item name="android:textColor">#000000</item>
         <item name="android:alpha">0.54</item>
     </style>
 
-    <style name="HintTextBlack" >
+    <style name="HintTextBlack">
         <item name="android:textColor">#000000</item>
         <item name="android:alpha">0.38</item>
     </style>
 
-    <style name="PrimaryTextWhite" >
+    <style name="PrimaryTextWhite">
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
-    <style name="SecondaryTextWhite" >
+    <style name="SecondaryTextWhite">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:alpha">0.7</item>
     </style>
 
-    <style name="HintTextWhite" >
+    <style name="HintTextWhite">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:alpha">0.5</item>
     </style>
@@ -49,4 +49,8 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textAllCaps">true</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -22,6 +22,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_TOKEN = "token";
     public static final String COLUMN_TIME = "time";
+    public static final String COLUMN_RESTAURANT = "restaurantName";
 
     public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -32,7 +33,8 @@ public class DBHandler extends SQLiteOpenHelper {
         String query = "CREATE TABLE " + TABLE_USER + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_TOKEN + " TEXT, " +
-                COLUMN_TIME + " INTEGER" +
+                COLUMN_TIME + " INTEGER, " +
+                COLUMN_RESTAURANT + " TEXT" +
                 ");";
         sqLiteDatabase.execSQL(query);
     }
@@ -54,6 +56,18 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void addUserToDB(String token, String restaurantName) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TOKEN, token);
+        Date date = new Date();
+        long time = date.getTime();
+        values.put(COLUMN_TIME, time);
+        values.put(COLUMN_RESTAURANT, restaurantName);
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(TABLE_USER, null, values);
+        db.close();
+    }
+
     public UserDB getUserDB(String token) {
         SQLiteDatabase db = getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_USER + " WHERE 1";
@@ -65,7 +79,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 if(c.getString(c.getColumnIndex(COLUMN_TOKEN)).equals(token)) {
                     db.close();
                     return new UserDB(c.getString(c.getColumnIndex(COLUMN_TOKEN)),
-                            c.getLong(c.getColumnIndex(COLUMN_TIME)));
+                            c.getLong(c.getColumnIndex(COLUMN_TIME)), c.getString(c.getColumnIndex(COLUMN_RESTAURANT)));
                 }
             }
         }
@@ -83,7 +97,7 @@ public class DBHandler extends SQLiteOpenHelper {
             if(c.getString(c.getColumnIndex(COLUMN_TOKEN)) != null) {
                 db.close();
                 return new UserDB(c.getString(c.getColumnIndex(COLUMN_TOKEN)),
-                        c.getLong(c.getColumnIndex(COLUMN_TIME)));
+                        c.getLong(c.getColumnIndex(COLUMN_TIME)), c.getString(c.getColumnIndex(COLUMN_RESTAURANT)));
 
             }
             c.close();
@@ -98,6 +112,11 @@ public class DBHandler extends SQLiteOpenHelper {
     public void updateUserDB(String token) {
         deleteUserDB(token);
         addUserToDB(token);
+    }
+
+    public void updateUserDB(String token,String restaurantName) {
+        deleteUserDB(token);
+        addUserToDB(token, restaurantName);
     }
 
     public void deleteUserDB(String token) {

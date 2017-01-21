@@ -2,28 +2,21 @@ package mk.klikniobrok;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 
 import org.json.JSONException;
@@ -43,8 +36,6 @@ import mk.klikniobrok.models.User;
 import mk.klikniobrok.services.AuthenticationService;
 import mk.klikniobrok.services.impl.AuthenticationServiceImpl;
 
-import static android.support.v7.appcompat.R.styleable.View;
-
 public class MainActivity extends AppCompatActivity implements TypefaceChangeListener, UserManagementListener, OnFragmentChangeListener {
     private User user;
     private LoginFragment loginFragment;
@@ -58,16 +49,17 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dbHandler = new DBHandler(this, null, null, 1);
+        if(isLoggedIn()) {
+            Intent intent = new Intent(MainActivity.this, LocationActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
         setContentView(R.layout.activity_main);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
 
-        dbHandler = new DBHandler(this, null, null, 1);
-        if(checkIfUserIsLoggedIn()) {
-            Intent intent = new Intent(MainActivity.this, LocationActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }
 
         logo = (AppCompatImageView) findViewById(R.id.logo);
         logo.setAdjustViewBounds(true);
@@ -228,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         }
     }
 
-    public boolean checkIfUserIsLoggedIn() {
+    public boolean isLoggedIn() {
         if(dbHandler.getUserDB() != null) {
             Date date = new Date();
             if(date.getTime() - dbHandler.getUserDB().getTime() < 10800000) {

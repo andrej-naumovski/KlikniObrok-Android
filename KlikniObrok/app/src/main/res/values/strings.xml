@@ -25,4 +25,14 @@
     <string name="repeatPasswordError">Лозинката не е иста</string>
     <string name="facebook_app_id">1814916868776002</string>
     <string name="com_facebook_loginview_log_in_button_long">Најави се со facebook</string>
+    <string name="title_activity_restaurant">RestaurantActivity</string>
+    <string name="menu">Мени</string>
+    <string name="order">Нарачка</string>
+    <string name="callEmployee">Повикај келнер</string>
+    <string name="logout">Одјави се</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

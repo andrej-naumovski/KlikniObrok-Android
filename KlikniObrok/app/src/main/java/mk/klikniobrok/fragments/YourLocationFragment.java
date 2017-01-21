@@ -26,6 +26,7 @@ import java.util.List;
 
 public class YourLocationFragment extends Fragment {
     private LocationActivity lActivity;
+    private Restaurant nearestRestaurant;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -43,10 +44,11 @@ public class YourLocationFragment extends Fragment {
         AppCompatTextView titleTextView = (AppCompatTextView) view.findViewById(R.id.titleTextView);
         AppCompatTextView addressTextView = (AppCompatTextView) view.findViewById(R.id.addressTextView);
         AppCompatTextView otherLocationsTextView = (AppCompatTextView) view.findViewById(R.id.otherLocationsTextView);
+        AppCompatTextView imHere = (AppCompatTextView)view.findViewById(R.id.imHereTextView);
 
         if(array.size() > 0) {
             if(array.size() == 1) {
-                Restaurant nearestRestaurant = array.get(0);
+                nearestRestaurant = array.get(0);
                 array.remove(0);
 
                 titleTextView.setText(nearestRestaurant.getName());
@@ -81,11 +83,11 @@ public class YourLocationFragment extends Fragment {
         }
 
 
-        AppCompatTextView imHere = (AppCompatTextView)view.findViewById(R.id.imHereTextView);
+
         imHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                lActivity.sucessfullLocation();
+                lActivity.restaurantActivity(nearestRestaurant.getName());
             }
         });
 

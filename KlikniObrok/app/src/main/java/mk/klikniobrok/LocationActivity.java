@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import mk.klikniobrok.database.handler.DBHandler;
+import mk.klikniobrok.database.model.UserDB;
 import mk.klikniobrok.fragments.ProgressBarFragment;
 import mk.klikniobrok.fragments.YourLocationFragment;
 import mk.klikniobrok.fragments.listeners.LocationManagerListener;
@@ -43,9 +44,14 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location);
-
         dbHandler = new DBHandler(this, null, null, 1);
+        if(isInRestaurant()) {
+            Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
+        setContentView(R.layout.activity_location);
 
 
         progressBarFragment = new ProgressBarFragment();
@@ -141,5 +147,21 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         }
         //TODO: Check if he is in a restaurant
         super.onResume();
+    }
+
+    public void restaurantActivity(String restaurantName) {
+        UserDB userdb = dbHandler.getUserDB();
+        userdb.setRestaurantName(restaurantName);
+        dbHandler.updateUserDB(userdb.getToken(), restaurantName);
+        //TODO: Implement QR Code scan.
+        Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    public boolean isInRestaurant() {
+        if(dbHandler.getUserDB().getRestaurantName() != null) {
+            return true;
+        } else return false;
     }
 }
