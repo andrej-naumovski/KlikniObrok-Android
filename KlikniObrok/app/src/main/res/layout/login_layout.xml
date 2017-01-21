@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -69,9 +69,8 @@
         android:text="@string/forgotPassword"
         android:textColor="@color/colorText" />
 
-    <android.support.v7.widget.AppCompatButton
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/fbLoginButton"
-        style="@style/PrimaryTextWhite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/forgotPwText"
@@ -79,9 +78,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/ripple_fb"
-        android:text="@string/fbLoginButtonText"
-        android:textSize="20sp" />
+        style="@style/FacebookLoginButton" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/register"

@@ -23,4 +23,6 @@
     <string name="notValidEmail">Емаил адресата не е валидна</string>
     <string name="shortPassword">Лозинката мора да содржи најмалку 8 карактери</string>
     <string name="repeatPasswordError">Лозинката не е иста</string>
+    <string name="facebook_app_id">1814916868776002</string>
+    <string name="com_facebook_loginview_log_in_button_long">Најави се со facebook</string>
 </resources>

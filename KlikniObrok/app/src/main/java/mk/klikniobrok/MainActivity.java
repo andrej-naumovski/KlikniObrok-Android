@@ -23,6 +23,9 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         dbHandler = new DBHandler(this, null, null, 1);
         if(checkIfUserIsLoggedIn()) {

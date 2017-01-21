@@ -19,10 +19,10 @@ import mk.klikniobrok.models.Restaurant;
 public class Data {
     public static List<Restaurant> getRestaurantList(Location location) {
         List<Restaurant> array = new ArrayList<>();
-        array.add(new Restaurant(0, "Public Room 1", null, null,
-                new Address("lokacija 1", null, null, null, 0),new LatLng(42.007990, 21.374959)));
-        array.add(new Restaurant(0, "Public Room 2", null, null,
-                new Address("lokacija 1", null, null, null, 0),new LatLng(42.002417, 21.407823 )));
+        array.add(new Restaurant(0, "Vlae doma", null, null,
+                new Address("lokacija 1", null, null, null, 0),new LatLng(42.002457, 21.407883 )));
+        array.add(new Restaurant(0, "Kaj mete doma", null, null,
+                new Address("lokacija 1", null, null, null, 0),new LatLng(41.988460, 21.451722 )));
         array.add(new Restaurant(0, "Public Room 3", null, null,
                 new Address("lokacija 1", null, null, null, 0),new LatLng(42.002457, 21.407883 )));
         array.add(new Restaurant(0, "Public Room 4", null, null,
@@ -39,7 +39,7 @@ public class Data {
             restLocation.setLongitude(array.get(i).getLocation().getLongitude());
             restLocation.setLatitude(array.get(i).getLocation().getLatitude());
             float result = location.distanceTo(restLocation);
-            if(result <= 200) {
+            if(result <= 400) {
                 newArray.add(array.get(i));
                 results.add(result);
             }

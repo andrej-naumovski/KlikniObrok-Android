@@ -40,4 +40,13 @@
     <style name="MyEditText">
         <item name="colorControlNormal">@color/colorAccent</item>
     </style>
+
+    <style name="FacebookLoginButton">
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:background">@drawable/ripple_fb</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
 </resources>
