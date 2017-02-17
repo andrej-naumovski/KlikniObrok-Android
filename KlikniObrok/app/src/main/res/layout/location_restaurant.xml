@@ -9,7 +9,22 @@
         style="@style/PrimaryTextWhite"
         android:textSize="24sp"
         android:text="@string/yourLocationIs"
+        android:textAlignment="center"
         android:id="@+id/yourLocationTextView"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:padding="4dp"
+        android:elevation="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Обиди се повторно"
+        android:background="@drawable/ripple"
+        android:layout_below="@+id/yourLocationTextView"
+        android:id="@+id/checkLocationAgainButton"
+        android:textSize="20sp"
+        style="@style/PrimaryTextWhite"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -117,7 +132,8 @@
         android:layout_marginTop="16dp"
         android:layout_below="@id/firstCardView"
         card_view:cardUseCompatPadding="true"
-        card_view:cardElevation="4dp">
+        card_view:cardElevation="4dp"
+        android:id="@+id/secondCardView">
 
         <RelativeLayout
             android:layout_width="wrap_content"

@@ -7,16 +7,21 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
+
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 
 import mk.klikniobrok.database.handler.DBHandler;
 import mk.klikniobrok.database.model.UserDB;
@@ -24,8 +29,11 @@ import mk.klikniobrok.fragments.ProgressBarFragment;
 import mk.klikniobrok.fragments.YourLocationFragment;
 import mk.klikniobrok.fragments.listeners.LocationManagerListener;
 import mk.klikniobrok.fragments.listeners.TypefaceChangeListener;
+import mk.klikniobrok.http.HttpMethods;
 import mk.klikniobrok.models.Restaurant;
 import mk.klikniobrok.services.Data;
+import mk.klikniobrok.services.RestaurantService;
+import mk.klikniobrok.services.impl.RestaurantServiceImpl;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -40,11 +48,13 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     private Location currentLocation;
     private List<Restaurant> array;
     private DBHandler dbHandler;
+    private RestaurantService restaurantService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHandler = new DBHandler(this, null, null, 1);
+        restaurantService = new RestaurantServiceImpl();
         if(isInRestaurant()) {
             Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -53,6 +63,8 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         }
         setContentView(R.layout.activity_location);
 
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         progressBarFragment = new ProgressBarFragment();
         yourLocationFragment = new YourLocationFragment();
@@ -124,9 +136,12 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     }
 
     public void manageLocation() {
+        Log.d("manageLocation", "called");
         if(currentLocation != null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, yourLocationFragment).commitAllowingStateLoss();
+            new GetRestaurants().execute(dbHandler.getUserDB().getToken());
+            Log.d("fragment", "changed");
         } else {
+            Log.d("else", "on location");
             Toast.makeText(this, "Локацијата не може да се добие", Toast.LENGTH_SHORT).show();
             findCurrentLocation();
         }
@@ -134,8 +149,20 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     }
 
     public List<Restaurant> getRestaurants() {
-        array = Data.getRestaurantList(currentLocation);
         return array;
+    }
+
+    class GetRestaurants extends AsyncTask<String, Void, List<Restaurant>> {
+        @Override
+        protected void onPostExecute(List<Restaurant> s) {
+            array = restaurantService.filterRestaurantsByLocation(s, currentLocation);
+            LocationActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, yourLocationFragment).commitAllowingStateLoss();
+        }
+
+        @Override
+        protected List<Restaurant> doInBackground(String... strings) {
+            return restaurantService.getAllRestaurants(strings[0]);
+        }
     }
 
     @Override
@@ -143,6 +170,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         Date currentDate = new Date();
         if(currentDate.getTime() - dbHandler.getUserDB().getTime() > 10800000) {
             dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
+            LoginManager.getInstance().logOut();
             startActivity(new Intent(LocationActivity.this, MainActivity.class));
         }
         //TODO: Check if he is in a restaurant
@@ -150,6 +178,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     }
 
     public void restaurantActivity(String restaurantName) {
+        Log.d("updateUser", restaurantName);
         UserDB userdb = dbHandler.getUserDB();
         userdb.setRestaurantName(restaurantName);
         dbHandler.updateUserDB(userdb.getToken(), restaurantName);
@@ -162,6 +191,11 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     public boolean isInRestaurant() {
         if(dbHandler.getUserDB().getRestaurantName() != null) {
             return true;
-        } else return false;
+        }
+        return false;
+    }
+
+    public void checkLocationAgain() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, progressBarFragment).commitAllowingStateLoss();
     }
 }

@@ -51,10 +51,17 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         super.onCreate(savedInstanceState);
         dbHandler = new DBHandler(this, null, null, 1);
         if(isLoggedIn()) {
-            Intent intent = new Intent(MainActivity.this, LocationActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            if(isInRestaurant()) {
+                Intent intent = new Intent(MainActivity.this, RestaurantActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                Intent intent = new Intent(MainActivity.this, LocationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
         }
         setContentView(R.layout.activity_main);
 
@@ -230,6 +237,13 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                 return false;
             }
 
+        }
+        return false;
+    }
+
+    public boolean isInRestaurant() {
+        if(dbHandler.getUserDB().getRestaurantName() != null) {
+            return true;
         }
         return false;
     }

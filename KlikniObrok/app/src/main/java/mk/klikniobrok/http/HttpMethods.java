@@ -28,6 +28,10 @@ public class HttpMethods {
     private static final String HTTP_POST = "POST";
 
     public static String doGet(String url, HashMap<String, String> params) {
+        return doGet(url, params, null);
+    }
+
+    public static String doGet(String url, HashMap<String, String> params, String authToken) {
         URL connUrl;
         StringBuilder response = new StringBuilder();
         try {
@@ -38,6 +42,10 @@ public class HttpMethods {
             connUrl = new URL(newUrl.toString());
 
             HttpsURLConnection httpConnection = getHttpUrlConnection(connUrl, HTTP_GET);
+
+            if(authToken != null) {
+                httpConnection.setRequestProperty("Authorization", "Bearer: " + authToken);
+            }
 
             String line;
             BufferedReader reader;
@@ -101,8 +109,6 @@ public class HttpMethods {
 
             GsonBuilder gsonBuilder = new GsonBuilder();
             Gson gson = gsonBuilder.create();
-
-            Log.v("JSON", gson.toJson(body));
 
             OutputStream outputStream = httpConnection.getOutputStream();
             BufferedWriter outputWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));

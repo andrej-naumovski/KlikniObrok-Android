@@ -6,7 +6,9 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import mk.klikniobrok.models.Address;
 import mk.klikniobrok.models.LatLng;
@@ -20,7 +22,7 @@ public class Data {
     public static List<Restaurant> getRestaurantList(Location location) {
         List<Restaurant> array = new ArrayList<>();
         array.add(new Restaurant(0, "Vlae doma", null, null,
-                new Address("lokacija 1", null, null, null, 0),new LatLng(42.002457, 21.407883 )));
+                new Address("lokacija 1", null, null, null, 0),new LatLng(42.007873, 21.374987 )));
         array.add(new Restaurant(0, "Kaj mete doma", null, null,
                 new Address("lokacija 1", null, null, null, 0),new LatLng(41.988460, 21.451722 )));
         array.add(new Restaurant(0, "Public Room 3", null, null,
@@ -56,5 +58,32 @@ public class Data {
             newArray.set(minResult, tempRestaurant);
         }
         return newArray;
+    }
+
+    public static HashMap<String, List<String>> getHashMap() {
+        HashMap<String, List<String>> hashMap = new HashMap<>();
+        List<String> list = new ArrayList<>();
+        list.add("Kur");
+        list.add("Kur");
+        list.add("Kur");
+        list.add("Kur");
+        list.add("Kur");
+        list.add("Kur");
+        hashMap.put("Pijaloci1", list);
+        hashMap.put("Pijaloci2", list);
+        hashMap.put("Pijaloci3", list);
+        hashMap.put("Pijaloci4", list);
+        hashMap.put("Pijaloci5", list);
+        hashMap.put("Pijaloci6", list);
+
+        return hashMap;
+    }
+
+    public static List<String> getKeys() {
+        return new ArrayList<String>(getHashMap().keySet());
+    }
+
+    public static List<String> getSubMenuItems(String key) {
+        return getHashMap().get(key);
     }
 }
