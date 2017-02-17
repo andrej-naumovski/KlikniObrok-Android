@@ -24,4 +24,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public String register(User user) {
         return HttpMethods.doPost("https://klikniobrok-java.herokuapp.com/auth/register", user);
     }
+
+    @Override
+    public String fbLogin(String email, String tag) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("tag", tag);
+        return HttpMethods.doPost("https://klikniobrok-java.herokuapp.com/auth/fb", params);
+    }
 }

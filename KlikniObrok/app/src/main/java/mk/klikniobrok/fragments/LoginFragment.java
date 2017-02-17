@@ -100,6 +100,7 @@ public class LoginFragment extends Fragment {
                                     GraphResponse response) {
                                 try {
                                     user.setEmail(response.getJSONObject().get("email").toString());
+                                    userManagementListener.loginFbUser(user);
                                 }
                                 catch (JSONException e) {
                                     e.printStackTrace();

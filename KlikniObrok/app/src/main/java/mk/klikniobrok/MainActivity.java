@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -28,6 +29,7 @@ import mk.klikniobrok.database.handler.DBHandler;
 import mk.klikniobrok.fragments.LoginFragment;
 import mk.klikniobrok.fragments.RegisterFragmentOne;
 import mk.klikniobrok.fragments.RegisterFragmentTwo;
+import mk.klikniobrok.fragments.FacebookLoginFragment;
 import mk.klikniobrok.fragments.listeners.OnFragmentChangeListener;
 import mk.klikniobrok.fragments.listeners.TypefaceChangeListener;
 import mk.klikniobrok.fragments.listeners.UserManagementListener;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     private LoginFragment loginFragment;
     private RegisterFragmentOne registerFragmentOne;
     private RegisterFragmentTwo registerFragmentTwo;
+    private FacebookLoginFragment facebookLoginFragment;
     private AppCompatImageView logo;
     private FrameLayout container;
     private AuthenticationService authenticationService = new AuthenticationServiceImpl();
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         loginFragment = new LoginFragment();
         registerFragmentOne = new RegisterFragmentOne();
         registerFragmentTwo = new RegisterFragmentTwo();
+        facebookLoginFragment = new FacebookLoginFragment();
 
         getSupportFragmentManager().beginTransaction().add(R.id.container, loginFragment).commit();
 
@@ -199,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         @Override
         protected void onPreExecute() {
             spinner.setIndeterminate(true);
+            spinner.setCancelable(false);
             spinner.setMessage(MainActivity.this.getResources().getString(R.string.loginProgress));
             spinner.show();
         }
@@ -209,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         @Override
         protected void onPreExecute() {
             spinner.setIndeterminate(true);
+            spinner.setCancelable(false);
             spinner.setMessage(MainActivity.this.getResources().getString(R.string.registerProgress));
             spinner.show();
         }
@@ -216,9 +222,70 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         @Override
         protected void onPostExecute(String s) {
             spinner.dismiss();
-            AlertDialog alert = new AlertDialog.Builder(MainActivity.this).create();
-            alert.setMessage(s);
-            alert.show();
+
+        }
+
+        @Override
+        protected String doInBackground(User... users) {
+            return authenticationService.register(users[0]);
+        }
+    }
+
+    class LoginFb extends AsyncTask<String, Void, String> {
+        private ProgressDialog spinner = new ProgressDialog(MainActivity.this);
+        @Override
+        protected void onPreExecute() {
+            spinner.setIndeterminate(true);
+            spinner.setCancelable(false);
+            spinner.setMessage(MainActivity.this.getResources().getString(R.string.registerProgress));
+            spinner.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            spinner.dismiss();
+            JSONObject tokenObject;
+            Log.d("fb register", s);
+            try {
+                tokenObject = new JSONObject(s);
+                String status = tokenObject.getString("responseStatus");
+                if(status.equalsIgnoreCase("SUCCESS")) {
+                    String token = tokenObject.getString("token");
+                    dbHandler.addUserToDB(token);
+                    Intent locationActivity = new Intent(MainActivity.this, LocationActivity.class);
+                    locationActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(locationActivity);
+                } else {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, facebookLoginFragment).commit();
+                }
+            } catch (JSONException e) {
+                AlertDialog errorDialog = new AlertDialog.Builder(MainActivity.this).create();
+                errorDialog.setMessage("Не може да се воспостави конекција со серверот, Ве молиме обидете се повторно.");
+                errorDialog.show();
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return authenticationService.fbLogin(strings[0], strings[1]);
+        }
+    }
+
+    class RegisterFb extends AsyncTask<User, Void, String> {
+        private ProgressDialog spinner = new ProgressDialog(MainActivity.this);
+        @Override
+        protected void onPreExecute() {
+            spinner.setIndeterminate(true);
+            spinner.setCancelable(false);
+            spinner.setMessage(MainActivity.this.getResources().getString(R.string.registerProgress));
+            spinner.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            spinner.dismiss();
+            Log.d("fb register", s);
+            new Login().execute(user.getUsername(), user.getPassword());
         }
 
         @Override
@@ -236,7 +303,6 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                 dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
                 return false;
             }
-
         }
         return false;
     }
@@ -246,5 +312,22 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void registerFbUser(String username, String password) {
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setEnabled(1);
+        user.setRole(Role.CUSTOMER);
+        user.setDateCreated(new Date());
+        user.setLastUsed(new Date());
+        new RegisterFb().execute(user);
+    }
+
+    @Override
+    public void loginFbUser(User user) {
+        this.user = user;
+        new LoginFb().execute(user.getEmail(), "fb");
     }
 }

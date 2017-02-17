@@ -9,4 +9,5 @@ import mk.klikniobrok.models.User;
 public interface AuthenticationService {
     String login(String username, String password);
     String register(User user);
+    String fbLogin(String email, String tag);
 }
