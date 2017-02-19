@@ -19,13 +19,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
 
-import mk.klikniobrok.database.handler.DBHandler;
+import mk.klikniobrok.database.handler.UserDBHandler;
 import mk.klikniobrok.fragments.LoginFragment;
 import mk.klikniobrok.fragments.RegisterFragmentOne;
 import mk.klikniobrok.fragments.RegisterFragmentTwo;
@@ -47,12 +48,12 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     private AppCompatImageView logo;
     private FrameLayout container;
     private AuthenticationService authenticationService = new AuthenticationServiceImpl();
-    private DBHandler dbHandler;
+    private UserDBHandler userDbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHandler = new DBHandler(this, null, null, 1);
+        userDbHandler = new UserDBHandler(this, null, null, 1);
         if(isLoggedIn()) {
             if(isInRestaurant()) {
                 Intent intent = new Intent(MainActivity.this, RestaurantActivity.class);
@@ -179,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                 String status = tokenObject.getString("responseStatus");
                 if(status.equalsIgnoreCase("SUCCESS")) {
                     String token = tokenObject.getString("token");
-                    dbHandler.addUserToDB(token);
+                    userDbHandler.addUserToDB(token);
                     Intent locationActivity = new Intent(MainActivity.this, LocationActivity.class);
                     locationActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(locationActivity);
@@ -251,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                 String status = tokenObject.getString("responseStatus");
                 if(status.equalsIgnoreCase("SUCCESS")) {
                     String token = tokenObject.getString("token");
-                    dbHandler.addUserToDB(token);
+                    userDbHandler.addUserToDB(token);
                     Intent locationActivity = new Intent(MainActivity.this, LocationActivity.class);
                     locationActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(locationActivity);
@@ -259,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, facebookLoginFragment).commit();
                 }
             } catch (JSONException e) {
+                LoginManager.getInstance().logOut();
                 AlertDialog errorDialog = new AlertDialog.Builder(MainActivity.this).create();
                 errorDialog.setMessage("Не може да се воспостави конекција со серверот, Ве молиме обидете се повторно.");
                 errorDialog.show();
@@ -295,12 +297,15 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     }
 
     public boolean isLoggedIn() {
-        if(dbHandler.getUserDB() != null) {
+        if(userDbHandler.getUserDB() != null) {
             Date date = new Date();
-            if(date.getTime() - dbHandler.getUserDB().getTime() < 10800000) {
+            if(date.getTime() - userDbHandler.getUserDB().getTime() < 10800000) {
                 return true;
             } else {
-                dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
+                if(LoginManager.getInstance() != null) {
+                    LoginManager.getInstance().logOut();
+                }
+                userDbHandler.deleteUserDB(userDbHandler.getUserDB().getToken());
                 return false;
             }
         }
@@ -308,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     }
 
     public boolean isInRestaurant() {
-        if(dbHandler.getUserDB().getRestaurantName() != null) {
+        if(userDbHandler.getUserDB().getRestaurantName() != null) {
             return true;
         }
         return false;

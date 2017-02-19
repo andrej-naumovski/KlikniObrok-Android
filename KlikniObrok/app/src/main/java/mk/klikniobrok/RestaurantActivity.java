@@ -2,9 +2,6 @@ package mk.klikniobrok;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
@@ -23,12 +20,12 @@ import android.view.MenuItem;
 
 import java.util.Date;
 
-import mk.klikniobrok.database.handler.DBHandler;
+import mk.klikniobrok.database.handler.RestaurantDetailsHandler;
+import mk.klikniobrok.database.handler.UserDBHandler;
 import mk.klikniobrok.fragments.MenuFragment;
 import mk.klikniobrok.fragments.OrderFragment;
 import mk.klikniobrok.fragments.SubMenuFragment;
 import mk.klikniobrok.fragments.listeners.OnItemClickListener;
-import mk.klikniobrok.models.Restaurant;
 
 public class RestaurantActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnItemClickListener {
@@ -36,10 +33,11 @@ public class RestaurantActivity extends AppCompatActivity
     private MenuFragment menuFragment = null;
     private OrderFragment orderFragment = null;
     private SubMenuFragment subMenuFragment = null;
-    private DBHandler dbHandler;
+    private UserDBHandler userDbHandler;
     private Toolbar toolbar;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
+    private RestaurantDetailsHandler restaurantDetailsHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +53,8 @@ public class RestaurantActivity extends AppCompatActivity
         orderFragment = new OrderFragment();
         subMenuFragment = new SubMenuFragment();
 
-        dbHandler = new DBHandler(this, null, null, 1);
+        userDbHandler = new UserDBHandler(this, null, null, 1);
+        restaurantDetailsHandler = new RestaurantDetailsHandler(this, null, null, 1);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -73,7 +72,7 @@ public class RestaurantActivity extends AppCompatActivity
         View headerLayout =
                 navigationView.inflateHeaderView(R.layout.nav_header_restaurant);
         AppCompatTextView tokenNavHeader = (AppCompatTextView) headerLayout.findViewById(R.id.navHeaderTokenTextView);
-        tokenNavHeader.setText(dbHandler.getUserDB().getRestaurantName());
+        tokenNavHeader.setText(restaurantDetailsHandler.getRestaurantDetails().getName());
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +152,8 @@ public class RestaurantActivity extends AppCompatActivity
         } else if (id == R.id.callEmployee) {
 
         } else if (id == R.id.logOut) {
-            dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
+            userDbHandler.deleteUserDB(userDbHandler.getUserDB().getToken());
+            restaurantDetailsHandler.deleteRestaurantDetails();
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(RestaurantActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -168,8 +168,9 @@ public class RestaurantActivity extends AppCompatActivity
     @Override
     public void onResume() {
         Date currentDate = new Date();
-        if(currentDate.getTime() - dbHandler.getUserDB().getTime() > 10800000) {
-            dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
+        if(currentDate.getTime() - userDbHandler.getUserDB().getTime() > 10800000) {
+            userDbHandler.deleteUserDB(userDbHandler.getUserDB().getToken());
+            restaurantDetailsHandler.deleteRestaurantDetails();
             LoginManager.getInstance().logOut();
             startActivity(new Intent(RestaurantActivity.this, MainActivity.class));
         }

@@ -37,8 +37,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/passwordHint"
             android:theme="@style/MyEditText"
-            android:inputType="textPassword"
-            android:imeOptions="actionDone"/>
+            android:inputType="textPassword" />
 
     </android.support.design.widget.TextInputLayout>
 

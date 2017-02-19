@@ -15,7 +15,7 @@ import mk.klikniobrok.database.model.UserDB;
  * Created by gjorgjim on 1/17/17.
  */
 
-public class DBHandler extends SQLiteOpenHelper {
+public class UserDBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "user.db";
     public static final String TABLE_USER = "user";
@@ -24,7 +24,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_TIME = "time";
     public static final String COLUMN_RESTAURANT = "restaurantName";
 
-    public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public UserDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
 

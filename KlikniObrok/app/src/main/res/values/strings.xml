@@ -27,6 +27,7 @@
     <string name="com_facebook_loginview_log_in_button_long">Најави се со facebook</string>
     <string name="com_facebook_loginview_log_in_button">Најави се со facebook</string>
     <string name="com_facebook_loginview_log_in_button_continue">Најави се со facebook</string>
+    <string name="com_facebook_loginview_log_out_button">Најави се со facebook</string>
     <string name="title_activity_restaurant">RestaurantActivity</string>
     <string name="menu">Мени</string>
     <string name="order">Нарачка</string>

@@ -17,13 +17,14 @@ public class User implements Serializable {
     private java.util.Date dateCreated;
     private java.util.Date lastUsed;
     private Role role;
+    private String imageUrl;
 
     public User() {
 
     }
 
     public User(String firstName, String lastName, String username, String email, String password,
-                int enabled, java.util.Date dateCreated, java.util.Date lastUsed, Role role) {
+                int enabled, java.util.Date dateCreated, java.util.Date lastUsed, Role role, String imageUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -33,6 +34,7 @@ public class User implements Serializable {
         this.dateCreated = dateCreated;
         this.lastUsed = lastUsed;
         this.role = role;
+        this.imageUrl = imageUrl;
     }
 
     public String getFirstName() {
@@ -105,5 +107,13 @@ public class User implements Serializable {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

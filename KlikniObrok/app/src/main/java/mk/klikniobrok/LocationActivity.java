@@ -23,15 +23,15 @@ import java.util.List;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 
-import mk.klikniobrok.database.handler.DBHandler;
+import mk.klikniobrok.database.handler.RestaurantDetailsHandler;
+import mk.klikniobrok.database.handler.UserDBHandler;
 import mk.klikniobrok.database.model.UserDB;
 import mk.klikniobrok.fragments.ProgressBarFragment;
 import mk.klikniobrok.fragments.YourLocationFragment;
 import mk.klikniobrok.fragments.listeners.LocationManagerListener;
 import mk.klikniobrok.fragments.listeners.TypefaceChangeListener;
-import mk.klikniobrok.http.HttpMethods;
 import mk.klikniobrok.models.Restaurant;
-import mk.klikniobrok.services.Data;
+import mk.klikniobrok.models.User;
 import mk.klikniobrok.services.RestaurantService;
 import mk.klikniobrok.services.impl.RestaurantServiceImpl;
 
@@ -47,13 +47,16 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     private LocationListener locationListener;
     private Location currentLocation;
     private List<Restaurant> array;
-    private DBHandler dbHandler;
+    private UserDBHandler userDbHandler;
     private RestaurantService restaurantService;
+    private User user;
+    private RestaurantDetailsHandler restaurantDetailsHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHandler = new DBHandler(this, null, null, 1);
+        userDbHandler = new UserDBHandler(this, null, null, 1);
+        restaurantDetailsHandler = new RestaurantDetailsHandler(this, null, null, 1);
         restaurantService = new RestaurantServiceImpl();
         if(isInRestaurant()) {
             Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
@@ -138,7 +141,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     public void manageLocation() {
         Log.d("manageLocation", "called");
         if(currentLocation != null) {
-            new GetRestaurants().execute(dbHandler.getUserDB().getToken());
+            new GetRestaurants().execute(userDbHandler.getUserDB().getToken());
             Log.d("fragment", "changed");
         } else {
             Log.d("else", "on location");
@@ -168,8 +171,9 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     @Override
     public void onResume() {
         Date currentDate = new Date();
-        if(currentDate.getTime() - dbHandler.getUserDB().getTime() > 10800000) {
-            dbHandler.deleteUserDB(dbHandler.getUserDB().getToken());
+        if(currentDate.getTime() - userDbHandler.getUserDB().getTime() > 10800000) {
+            userDbHandler.deleteUserDB(userDbHandler.getUserDB().getToken());
+            restaurantDetailsHandler.deleteRestaurantDetails();
             LoginManager.getInstance().logOut();
             startActivity(new Intent(LocationActivity.this, MainActivity.class));
         }
@@ -177,11 +181,11 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         super.onResume();
     }
 
-    public void restaurantActivity(String restaurantName) {
-        Log.d("updateUser", restaurantName);
-        UserDB userdb = dbHandler.getUserDB();
-        userdb.setRestaurantName(restaurantName);
-        dbHandler.updateUserDB(userdb.getToken(), restaurantName);
+    public void restaurantActivity(Restaurant restaurant) {
+        UserDB userdb = userDbHandler.getUserDB();
+        userdb.setRestaurantName(restaurant.getName());
+        userDbHandler.updateUserDB(userdb.getToken(), restaurant.getName());
+        restaurantDetailsHandler.addRestaurantDetailsToDB(restaurant);
         //TODO: Implement QR Code scan.
         Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -189,7 +193,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     }
 
     public boolean isInRestaurant() {
-        if(dbHandler.getUserDB().getRestaurantName() != null) {
+        if(userDbHandler.getUserDB().getRestaurantName() != null) {
             return true;
         }
         return false;

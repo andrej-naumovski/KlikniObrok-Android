@@ -101,8 +101,7 @@ public class YourLocationFragment extends Fragment {
         imHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("imHereOnClick", nearestRestaurant.getName());
-                lActivity.restaurantActivity(nearestRestaurant.getName());
+                lActivity.restaurantActivity(nearestRestaurant);
             }
         });
 
