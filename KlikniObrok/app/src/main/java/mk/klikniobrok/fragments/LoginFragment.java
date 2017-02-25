@@ -69,8 +69,10 @@ public class LoginFragment extends Fragment {
         LoginButton fbLoginButton = (LoginButton)view.findViewById(R.id.fbLoginButton);
         fbLoginButton.setFragment(this);
         fbLoginButton.setPadding(8, 24, 8, 24);
-        fbLoginButton.setBackgroundResource(R.drawable.ripple_fb);
-        fbLoginButton.setElevation(4);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            fbLoginButton.setBackgroundResource(R.drawable.ripple_fb);
+            fbLoginButton.setElevation(4);
+        }
 
         AppCompatTextView register = (AppCompatTextView) view.findViewById(R.id.register);
         AppCompatTextView forgotPassword = (AppCompatTextView) view.findViewById(R.id.forgotPwText);

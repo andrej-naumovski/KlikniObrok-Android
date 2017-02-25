@@ -17,6 +17,8 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/progress_bar"
         android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="#FFFFFF"
         android:layout_below="@id/gettingLocationTextView"/>
 
     <android.support.v7.widget.AppCompatImageView

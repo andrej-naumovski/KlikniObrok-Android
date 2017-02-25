@@ -68,7 +68,6 @@ public class YourLocationFragment extends Fragment {
             if(array.size() == 0) {
                 titleTextView.setText(nearestRestaurant.getName());
                 addressTextView.setText(nearestRestaurant.getAddress().getName());
-
                 secondCardView.setVisibility(View.GONE);
             }
             else {
@@ -101,6 +100,7 @@ public class YourLocationFragment extends Fragment {
         imHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("AndrejZaebancija:", nearestRestaurant.getEmail());
                 lActivity.restaurantActivity(nearestRestaurant);
             }
         });

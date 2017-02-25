@@ -14,10 +14,11 @@
 
     <android.support.v7.widget.AppCompatButton
         android:padding="4dp"
+        android:elevation="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Обиди се повторно"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/ripple"
         android:layout_below="@+id/yourLocationTextView"
         android:id="@+id/checkLocationAgainButton"
         android:textSize="20sp"
@@ -30,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="0dp"
+        android:elevation="3dp"
         android:id="@+id/firstCardView"
         android:layout_below="@id/yourLocationTextView"
         card_view:cardUseCompatPadding="true"
@@ -113,6 +115,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="0dp"
+        android:elevation="3dp"
         android:layout_marginTop="16dp"
         android:layout_below="@id/firstCardView"
         card_view:cardUseCompatPadding="true"
