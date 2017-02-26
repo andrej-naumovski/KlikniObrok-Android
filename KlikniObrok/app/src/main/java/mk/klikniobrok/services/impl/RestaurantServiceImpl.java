@@ -25,15 +25,12 @@ public class RestaurantServiceImpl implements RestaurantService {
         Gson gsonParser = new GsonBuilder().create();
         Type listType = new TypeToken<List<Restaurant>>() {
         }.getType();
-        Log.d("JSONArray", authToken);
         String jsonArrayRestaurants = HttpMethods.doGet(
                 "https://klikniobrok-java.herokuapp.com/restaurants/",
                 null,
                 authToken
         );
         List<Restaurant> restaurants = gsonParser.fromJson(jsonArrayRestaurants, listType);
-        Log.d("JSONArray", jsonArrayRestaurants);
-        Log.d("Restaurant", restaurants.get(0).getName());
         return restaurants;
     }
 
@@ -63,5 +60,20 @@ public class RestaurantServiceImpl implements RestaurantService {
             newArray.set(minResult, tempRestaurant);
         }
         return newArray;
+    }
+
+    @Override
+    public List<String> getRestaurantEntryTypes(String authToken, Restaurant restaurant) {
+        List<String> entryTypes;
+        Gson gsonParser = new Gson();
+        Type listType = new TypeToken<List<String>>(){}.getType();
+        String jsonArrayEntryTypes = HttpMethods.doGet(
+                "https://klikniobrok-java.herokuapp.com/restaurants/" + restaurant.getId() + "/entry_types",
+                null,
+                authToken
+        );
+        entryTypes = gsonParser.fromJson(jsonArrayEntryTypes, listType);
+        Log.d("entry types", entryTypes.toString());
+        return entryTypes;
     }
 }

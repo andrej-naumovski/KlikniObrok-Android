@@ -22,6 +22,7 @@ import mk.klikniobrok.R;
 import mk.klikniobrok.RestaurantActivity;
 import mk.klikniobrok.fragments.adapters.MenuRecyclerViewAdapter;
 import mk.klikniobrok.fragments.listeners.RecyclerItemClickListener;
+import mk.klikniobrok.fragments.listeners.RestaurantMenuListener;
 import mk.klikniobrok.services.Data;
 
 /**
@@ -30,10 +31,12 @@ import mk.klikniobrok.services.Data;
 
 public class MenuFragment extends Fragment {
     private RestaurantActivity restaurantActivity;
+    private RestaurantMenuListener restaurantMenuListener;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         restaurantActivity = (RestaurantActivity) context;
+        restaurantMenuListener = (RestaurantMenuListener) context;
     }
 
     @Nullable
@@ -41,7 +44,7 @@ public class MenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu_fragment_layout, container, false);
 
-        final List<String> array = Data.getKeys();
+        final List<String> array = restaurantMenuListener.getEntryTypes();
 
         final RecyclerView.Adapter adapter = new MenuRecyclerViewAdapter(this, array);
         RecyclerView.LayoutManager manager = new GridLayoutManager(restaurantActivity, 2);

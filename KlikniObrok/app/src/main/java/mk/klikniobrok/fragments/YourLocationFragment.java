@@ -49,6 +49,8 @@ public class YourLocationFragment extends Fragment {
         AppCompatTextView addressTextView = (AppCompatTextView) view.findViewById(R.id.addressTextView);
         AppCompatTextView otherLocationsTextView = (AppCompatTextView) view.findViewById(R.id.otherLocationsTextView);
         AppCompatTextView imHere = (AppCompatTextView)view.findViewById(R.id.imHereTextView);
+        AppCompatTextView cityTextView = (AppCompatTextView)view.findViewById(R.id.cityTextView);
+        AppCompatTextView numberTextView = (AppCompatTextView)view.findViewById(R.id.numberTextView);
         CardView firstCardView = (CardView) view.findViewById(R.id.firstCardView);
         CardView secondCardView = (CardView) view.findViewById(R.id.secondCardView);
         AppCompatTextView yourLocationTextView = (AppCompatTextView)view.findViewById(R.id.yourLocationTextView);
@@ -65,16 +67,16 @@ public class YourLocationFragment extends Fragment {
             nearestRestaurant = array.get(0);
             array.remove(0);
 
+            titleTextView.setText(nearestRestaurant.getName());
+            addressTextView.setText(nearestRestaurant.getAddress().getName());
+            numberTextView.setText(nearestRestaurant.getPhone());
+            cityTextView.setText(nearestRestaurant.getAddress().getCity() + ", " + nearestRestaurant.getAddress().getCountry());
             if(array.size() == 0) {
-                titleTextView.setText(nearestRestaurant.getName());
-                addressTextView.setText(nearestRestaurant.getAddress().getName());
+
                 secondCardView.setVisibility(View.GONE);
             }
             else {
                 if(array.size() > 0) {
-                    titleTextView.setText(nearestRestaurant.getName());
-                    addressTextView.setText(nearestRestaurant.getAddress().getName());
-
                     RecyclerView.Adapter adapter = new RestaurantsRecyclerViewAdapter(array);
                     RecyclerView.LayoutManager manager = new LinearLayoutManager(lActivity) {
                         @Override

@@ -13,4 +13,5 @@ import mk.klikniobrok.models.Restaurant;
 public interface RestaurantService {
     List<Restaurant> getAllRestaurants(String authToken);
     List<Restaurant> filterRestaurantsByLocation(List<Restaurant> restaurants, Location location);
+    List<String> getRestaurantEntryTypes(String authToken, Restaurant restaurant);
 }

@@ -1,6 +1,7 @@
 package mk.klikniobrok;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.Date;
+import java.util.List;
 
 import mk.klikniobrok.database.handler.RestaurantDetailsHandler;
 import mk.klikniobrok.database.handler.UserDBHandler;
@@ -27,9 +29,12 @@ import mk.klikniobrok.fragments.MenuFragment;
 import mk.klikniobrok.fragments.OrderFragment;
 import mk.klikniobrok.fragments.SubMenuFragment;
 import mk.klikniobrok.fragments.listeners.OnItemClickListener;
+import mk.klikniobrok.fragments.listeners.RestaurantMenuListener;
+import mk.klikniobrok.services.RestaurantService;
+import mk.klikniobrok.services.impl.RestaurantServiceImpl;
 
 public class RestaurantActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnItemClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnItemClickListener, RestaurantMenuListener {
 
     private MenuFragment menuFragment = null;
     private OrderFragment orderFragment = null;
@@ -39,6 +44,9 @@ public class RestaurantActivity extends AppCompatActivity
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
     private RestaurantDetailsHandler restaurantDetailsHandler;
+    private RestaurantService restaurantService;
+
+    private List<String> entryTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,15 @@ public class RestaurantActivity extends AppCompatActivity
         userDbHandler = new UserDBHandler(this, null, null, 1);
         restaurantDetailsHandler = new RestaurantDetailsHandler(this, null, null, 1);
 
+        restaurantService = new RestaurantServiceImpl();
+
+        if(entryTypes == null) {
+            new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
+        } else {
+            onNavigationItemSelected(navigationView.getMenu().getItem(0));
+            navigationView.setCheckedItem(navigationView.getMenu().getItem(0).getItemId());
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -63,9 +80,6 @@ public class RestaurantActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
-        navigationView.setCheckedItem(navigationView.getMenu().getItem(0).getItemId());
 
         View headerView = navigationView.getHeaderView(0);
         View headerLayout =
@@ -174,6 +188,14 @@ public class RestaurantActivity extends AppCompatActivity
             startActivity(new Intent(RestaurantActivity.this, MainActivity.class));
         }
         //TODO: Check if he is in a restaurant
+        if(restaurantDetailsHandler.getRestaurantDetails() != null) {
+            if(entryTypes == null) {
+                new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
+            } else {
+                onNavigationItemSelected(navigationView.getMenu().getItem(0));
+                navigationView.setCheckedItem(navigationView.getMenu().getItem(0).getItemId());
+            }
+        }
         super.onResume();
     }
 
@@ -192,5 +214,25 @@ public class RestaurantActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public List<String> getEntryTypes() {
+        return entryTypes;
+    }
+
+    class GetEntryTypes extends AsyncTask<String, Void, List<String>> {
+        @Override
+        protected List<String> doInBackground(String... params) {
+            return restaurantService.getRestaurantEntryTypes(params[0], restaurantDetailsHandler.getRestaurantDetails());
+        }
+
+        @Override
+        protected void onPostExecute(List<String> s) {
+            entryTypes = s;
+            onNavigationItemSelected(navigationView.getMenu().getItem(0));
+            navigationView.setCheckedItem(navigationView.getMenu().getItem(0).getItemId());
+
+        }
     }
 }
