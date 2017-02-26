@@ -6,6 +6,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 
@@ -46,8 +47,6 @@ public class RestaurantActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(this.getString(R.string.menu));
         setSupportActionBar(toolbar);
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
 
         menuFragment = new MenuFragment();
         orderFragment = new OrderFragment();
@@ -190,5 +189,8 @@ public class RestaurantActivity extends AppCompatActivity
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

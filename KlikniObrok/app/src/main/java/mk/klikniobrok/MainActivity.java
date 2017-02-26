@@ -2,6 +2,8 @@ package mk.klikniobrok;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -18,14 +20,19 @@ import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Date;
 
+import id.zelory.compressor.Compressor;
 import mk.klikniobrok.database.handler.UserDBHandler;
 import mk.klikniobrok.fragments.LoginFragment;
 import mk.klikniobrok.fragments.RegisterFragmentOne;
@@ -69,10 +76,9 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         }
         setContentView(R.layout.activity_main);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
-
 
         logo = (AppCompatImageView) findViewById(R.id.logo);
+        Glide.with(this).load(R.drawable.logo).into(logo);
         logo.setAdjustViewBounds(true);
 
         container = (FrameLayout) findViewById(R.id.container);
@@ -334,5 +340,11 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     public void loginFbUser(User user) {
         this.user = user;
         new LoginFb().execute(user.getEmail(), "fb");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Glide.clear(logo);
     }
 }

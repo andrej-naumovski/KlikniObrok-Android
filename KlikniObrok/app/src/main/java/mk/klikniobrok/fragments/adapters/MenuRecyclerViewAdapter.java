@@ -1,16 +1,23 @@
 package mk.klikniobrok.fragments.adapters;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import mk.klikniobrok.R;
+import mk.klikniobrok.RestaurantActivity;
+import mk.klikniobrok.fragments.MenuFragment;
+import mk.klikniobrok.models.Restaurant;
 
 /**
  * Created by gjorgjim on 1/26/17.
@@ -18,7 +25,7 @@ import mk.klikniobrok.R;
 
 public class MenuRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantsRecyclerViewAdapter.ViewHolder> {
     private List<String> array;
-
+    private MenuFragment fragment;
     public static class ViewHolder extends RecyclerView.ViewHolder  {
         public View view;
         public ViewHolder(View view) {
@@ -27,7 +34,8 @@ public class MenuRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantsRec
         }
     }
 
-    public MenuRecyclerViewAdapter(List<String> array) {
+    public MenuRecyclerViewAdapter(MenuFragment fragment, List<String> array) {
+        this.fragment = fragment;
         this.array = array;
     }
 
@@ -43,6 +51,7 @@ public class MenuRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantsRec
         AppCompatTextView menuTitle = (AppCompatTextView) holder.view.findViewById(R.id.foodTitle);
         AppCompatImageView menuImage = (AppCompatImageView) holder.view.findViewById(R.id.foodImage);
         menuImage.setAdjustViewBounds(true);
+        Glide.with(fragment).load(R.drawable.food).into(menuImage);
         menuTitle.setText(array.get(position));
     }
 
@@ -50,6 +59,4 @@ public class MenuRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantsRec
     public int getItemCount() {
         return array.size();
     }
-
-
 }

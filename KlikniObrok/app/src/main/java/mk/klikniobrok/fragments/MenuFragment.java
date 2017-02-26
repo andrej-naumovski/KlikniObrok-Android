@@ -1,6 +1,8 @@
 package mk.klikniobrok.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +43,7 @@ public class MenuFragment extends Fragment {
 
         final List<String> array = Data.getKeys();
 
-        final RecyclerView.Adapter adapter = new MenuRecyclerViewAdapter(array);
+        final RecyclerView.Adapter adapter = new MenuRecyclerViewAdapter(this, array);
         RecyclerView.LayoutManager manager = new GridLayoutManager(restaurantActivity, 2);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.menuRecyclerView);
 
