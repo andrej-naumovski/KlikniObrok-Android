@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 import mk.klikniobrok.R;
 import mk.klikniobrok.RestaurantActivity;
 import mk.klikniobrok.fragments.adapters.SubMenuRecyclerViewAdapter;
+import mk.klikniobrok.models.Entry;
 import mk.klikniobrok.services.Data;
 
 /**
@@ -23,9 +25,8 @@ import mk.klikniobrok.services.Data;
  */
 
 public class SubMenuFragment extends Fragment {
-    private String key;
+    private String type;
     private RestaurantActivity restaurantActivity;
-
 
     @Override
     public void onAttach(Context context) {
@@ -40,10 +41,10 @@ public class SubMenuFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         if(bundle != null) {
-            key = bundle.getString("key");
+            type = bundle.getString("type");
         }
-
-        List<String> array = Data.getSubMenuItems(key);
+        Log.d("key", type);
+        List<Entry> array = restaurantActivity.getEntriesByType(type);
 
         RecyclerView.Adapter adapter = new SubMenuRecyclerViewAdapter(array);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(restaurantActivity);

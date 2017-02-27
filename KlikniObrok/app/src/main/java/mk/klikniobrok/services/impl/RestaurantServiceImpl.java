@@ -9,9 +9,12 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import mk.klikniobrok.http.HttpMethods;
+import mk.klikniobrok.models.Entry;
+import mk.klikniobrok.models.EntryWrapper;
 import mk.klikniobrok.models.Restaurant;
 import mk.klikniobrok.services.RestaurantService;
 
@@ -75,5 +78,22 @@ public class RestaurantServiceImpl implements RestaurantService {
         entryTypes = gsonParser.fromJson(jsonArrayEntryTypes, listType);
         Log.d("entry types", entryTypes.toString());
         return entryTypes;
+    }
+
+    @Override
+    public List<Entry> getEntriesByType(String authToken, Restaurant restaurant, String entryType) {
+        List<Entry> entries;
+        Gson gsonParser = new Gson();
+        Type listType = new TypeToken<List<Entry>>(){}.getType();
+        HashMap<String, String> params = new HashMap<>();
+        params.put("type", entryType);
+        String jsonArrayEntries = HttpMethods.doGet(
+                "https://klikniobrok-java.herokuapp.com/restaurants/" + restaurant.getId() + "/entries",
+                params,
+                authToken
+        );
+        entries = gsonParser.fromJson(jsonArrayEntries, listType);
+        Log.d("entries", jsonArrayEntries);
+        return entries;
     }
 }

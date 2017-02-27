@@ -10,15 +10,16 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import mk.klikniobrok.R;
+import mk.klikniobrok.models.Entry;
 
 /**
  * Created by gjorgjim on 1/26/17.
  */
 
 public class SubMenuRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantsRecyclerViewAdapter.ViewHolder> {
-    private List<String> array;
+    private List<Entry> array;
 
-    public SubMenuRecyclerViewAdapter(List<String> array) {
+    public SubMenuRecyclerViewAdapter(List<Entry> array) {
         this.array = array;
     }
 
@@ -40,7 +41,7 @@ public class SubMenuRecyclerViewAdapter extends RecyclerView.Adapter<Restaurants
     @Override
     public void onBindViewHolder(RestaurantsRecyclerViewAdapter.ViewHolder holder, int position) {
         AppCompatTextView subMenu = (AppCompatTextView) holder.view.findViewById(R.id.subMenuText);
-        subMenu.setText(array.get(position));
+        subMenu.setText(array.get(position).getName());
     }
 
     @Override

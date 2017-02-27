@@ -20,7 +20,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import mk.klikniobrok.database.handler.RestaurantDetailsHandler;
@@ -30,11 +32,14 @@ import mk.klikniobrok.fragments.OrderFragment;
 import mk.klikniobrok.fragments.SubMenuFragment;
 import mk.klikniobrok.fragments.listeners.OnItemClickListener;
 import mk.klikniobrok.fragments.listeners.RestaurantMenuListener;
+import mk.klikniobrok.fragments.listeners.SubMenuEntriesListener;
+import mk.klikniobrok.models.Entry;
+import mk.klikniobrok.models.EntryWrapper;
 import mk.klikniobrok.services.RestaurantService;
 import mk.klikniobrok.services.impl.RestaurantServiceImpl;
 
 public class RestaurantActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnItemClickListener, RestaurantMenuListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnItemClickListener, RestaurantMenuListener, SubMenuEntriesListener {
 
     private MenuFragment menuFragment = null;
     private OrderFragment orderFragment = null;
@@ -47,6 +52,7 @@ public class RestaurantActivity extends AppCompatActivity
     private RestaurantService restaurantService;
 
     private List<String> entryTypes;
+    private HashMap<String, List<Entry>> entries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,8 @@ public class RestaurantActivity extends AppCompatActivity
         restaurantDetailsHandler = new RestaurantDetailsHandler(this, null, null, 1);
 
         restaurantService = new RestaurantServiceImpl();
+
+        entries = new HashMap<>();
 
         if(entryTypes == null) {
             new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
@@ -187,7 +195,6 @@ public class RestaurantActivity extends AppCompatActivity
             LoginManager.getInstance().logOut();
             startActivity(new Intent(RestaurantActivity.this, MainActivity.class));
         }
-        //TODO: Check if he is in a restaurant
         if(restaurantDetailsHandler.getRestaurantDetails() != null) {
             if(entryTypes == null) {
                 new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
@@ -201,14 +208,8 @@ public class RestaurantActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(String key) {
-        subMenuFragment = new SubMenuFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("key", key);
-        subMenuFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_restaurant, subMenuFragment).commit();
-        toolbar.setTitle(key);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        new GetEntriesByType().execute(key);
+
     }
 
     @Override
@@ -219,6 +220,11 @@ public class RestaurantActivity extends AppCompatActivity
     @Override
     public List<String> getEntryTypes() {
         return entryTypes;
+    }
+
+    @Override
+    public List<Entry> getEntriesByType(String type) {
+        return entries.get(type);
     }
 
     class GetEntryTypes extends AsyncTask<String, Void, List<String>> {
@@ -233,6 +239,26 @@ public class RestaurantActivity extends AppCompatActivity
             onNavigationItemSelected(navigationView.getMenu().getItem(0));
             navigationView.setCheckedItem(navigationView.getMenu().getItem(0).getItemId());
 
+        }
+    }
+
+    class GetEntriesByType extends AsyncTask<String, Void, List<Entry>> {
+        @Override
+        protected List<Entry> doInBackground(String... params) {
+            return restaurantService.getEntriesByType(userDbHandler.getUserDB().getToken(), restaurantDetailsHandler.getRestaurantDetails(), params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<Entry> entriesByType) {
+            entries.put(entriesByType.get(0).getEntryType().toString(), entriesByType);
+            Bundle bundle = new Bundle();
+            Log.d("entries", entries.get(entriesByType.get(0).getEntryType().toString()).toString());
+            bundle.putString("type", entriesByType.get(0).getEntryType().toString());
+            subMenuFragment.setArguments(bundle);
+            RestaurantActivity.this.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_restaurant, subMenuFragment).commit();
+            toolbar.setTitle(entriesByType.get(0).getEntryType().toString());
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         }
     }
 }
