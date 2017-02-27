@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.util.AsyncListUtil;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
 import android.view.Display;
@@ -34,6 +35,7 @@ import java.util.Date;
 
 import id.zelory.compressor.Compressor;
 import mk.klikniobrok.database.handler.UserDBHandler;
+import mk.klikniobrok.database.handler.UserDetailsHandler;
 import mk.klikniobrok.fragments.LoginFragment;
 import mk.klikniobrok.fragments.RegisterFragmentOne;
 import mk.klikniobrok.fragments.RegisterFragmentTwo;
@@ -44,7 +46,9 @@ import mk.klikniobrok.fragments.listeners.UserManagementListener;
 import mk.klikniobrok.models.Role;
 import mk.klikniobrok.models.User;
 import mk.klikniobrok.services.AuthenticationService;
+import mk.klikniobrok.services.UserService;
 import mk.klikniobrok.services.impl.AuthenticationServiceImpl;
+import mk.klikniobrok.services.impl.UserServiceImpl;
 
 public class MainActivity extends AppCompatActivity implements TypefaceChangeListener, UserManagementListener, OnFragmentChangeListener {
     private User user;
@@ -56,11 +60,16 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
     private FrameLayout container;
     private AuthenticationService authenticationService = new AuthenticationServiceImpl();
     private UserDBHandler userDbHandler;
+    private UserDetailsHandler userDetailsHandler;
+    private UserService userService;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userDetailsHandler = new UserDetailsHandler(this, null, null, 1);
         userDbHandler = new UserDBHandler(this, null, null, 1);
+        userService = new UserServiceImpl();
         if(isLoggedIn()) {
             if(isInRestaurant()) {
                 Intent intent = new Intent(MainActivity.this, RestaurantActivity.class);
@@ -110,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
 
     @Override
     public void loginUser(String username, String password) {
+        this.username = username;
         new Login().execute(username, password);
     }
 
@@ -187,9 +197,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                 if(status.equalsIgnoreCase("SUCCESS")) {
                     String token = tokenObject.getString("token");
                     userDbHandler.addUserToDB(token);
-                    Intent locationActivity = new Intent(MainActivity.this, LocationActivity.class);
-                    locationActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(locationActivity);
+                    new GetUserDetails().execute(username, "username");
                 } else {
                     AlertDialog errorDialog = new AlertDialog.Builder(MainActivity.this).create();
                     errorDialog.setMessage("Грешна комбинација на корисничко име/лозинка, обидете се повторно.");
@@ -259,9 +267,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                 if(status.equalsIgnoreCase("SUCCESS")) {
                     String token = tokenObject.getString("token");
                     userDbHandler.addUserToDB(token);
-                    Intent locationActivity = new Intent(MainActivity.this, LocationActivity.class);
-                    locationActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(locationActivity);
+                    new GetUserDetails().execute(user.getEmail(), "email");
                 } else {
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, facebookLoginFragment).commit();
                 }
@@ -302,6 +308,25 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
         }
     }
 
+    class GetUserDetails extends AsyncTask<String, Void, User> {
+        @Override
+        protected void onPostExecute(User s) {
+            userDetailsHandler.addUserDetailsToDB(s);
+            Intent locationActivity = new Intent(MainActivity.this, LocationActivity.class);
+            locationActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(locationActivity);
+        }
+
+        @Override
+        protected User doInBackground(String... params) {
+            if(params[1].equals("username")) {
+                return userService.getUserByUsername(userDbHandler.getUserDB().getToken(), params[0]);
+            } else {
+                return userService.getUserByEmail(userDbHandler.getUserDB().getToken(), params[0]);
+            }
+        }
+    }
+
     public boolean isLoggedIn() {
         if(userDbHandler.getUserDB() != null) {
             Date date = new Date();
@@ -312,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements TypefaceChangeLis
                     LoginManager.getInstance().logOut();
                 }
                 userDbHandler.deleteUserDB(userDbHandler.getUserDB().getToken());
+                userDetailsHandler.removeUserDetails();
                 return false;
             }
         }

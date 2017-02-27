@@ -25,6 +25,7 @@ import com.facebook.login.LoginManager;
 
 import mk.klikniobrok.database.handler.RestaurantDetailsHandler;
 import mk.klikniobrok.database.handler.UserDBHandler;
+import mk.klikniobrok.database.handler.UserDetailsHandler;
 import mk.klikniobrok.database.model.UserDB;
 import mk.klikniobrok.fragments.ProgressBarFragment;
 import mk.klikniobrok.fragments.YourLocationFragment;
@@ -51,12 +52,14 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     private RestaurantService restaurantService;
     private User user;
     private RestaurantDetailsHandler restaurantDetailsHandler;
+    private UserDetailsHandler userDetailsHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userDbHandler = new UserDBHandler(this, null, null, 1);
         restaurantDetailsHandler = new RestaurantDetailsHandler(this, null, null, 1);
+        userDetailsHandler = new UserDetailsHandler(this, null, null, 1);
         restaurantService = new RestaurantServiceImpl();
         if(isInRestaurant()) {
             Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
@@ -174,6 +177,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         if(currentDate.getTime() - userDbHandler.getUserDB().getTime() > 10800000) {
             userDbHandler.deleteUserDB(userDbHandler.getUserDB().getToken());
             restaurantDetailsHandler.deleteRestaurantDetails();
+            userDetailsHandler.removeUserDetails();
             LoginManager.getInstance().logOut();
             startActivity(new Intent(LocationActivity.this, MainActivity.class));
         }
@@ -187,6 +191,7 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         userDbHandler.updateUserDB(userdb.getToken(), restaurant.getName());
         restaurantDetailsHandler.addRestaurantDetailsToDB(restaurant);
         //TODO: Implement QR Code scan.
+        //userDbHandler.updateUserDB(userdb.getToken(), userdb.getRestaurantName(), tableid);
         Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

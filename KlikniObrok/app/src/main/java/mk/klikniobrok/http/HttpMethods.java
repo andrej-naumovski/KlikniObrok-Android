@@ -37,6 +37,7 @@ public class HttpMethods {
         try {
             StringBuilder newUrl = new StringBuilder(url);
             if(params != null) {
+                newUrl.append("?");
                 newUrl.append(createParamString(params));
             }
             connUrl = new URL(newUrl.toString());
@@ -136,7 +137,6 @@ public class HttpMethods {
 
     private static String createParamString(HashMap<String, String> params) {
         StringBuilder paramString = new StringBuilder();
-        paramString.append("?");
         boolean first = true;
         for(Map.Entry<String, String> param : params.entrySet()) {
             if(first) {

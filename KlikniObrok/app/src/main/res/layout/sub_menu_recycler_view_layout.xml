@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="8dp">
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:text="Name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         style="@style/PrimaryTextBlack"
-        android:id="@+id/subMenuText"/>
+        android:id="@+id/subMenuName"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/subMenuIngredients"
+        android:layout_below="@+id/subMenuName"
+        style="@style/SecondaryTextBlack"
+        android:textSize="16sp"
+        android:text="quantity1, quantity2"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/subMenuQuantityType"
+        android:layout_toEndOf="@+id/subMenuQuantity"
+        android:layout_toRightOf="@+id/subMenuQuantity"
+        android:layout_alignBaseline="@+id/subMenuQuantity"
+        style="@style/SecondaryTextBlack"
+        android:textStyle="italic"
+        android:textSize="16sp"
+        android:text="mg"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/subMenuQuantity"
+        android:layout_toRightOf="@id/subMenuName"
+        android:layout_toEndOf="@id/subMenuName"
+        android:textStyle="italic"
+        android:textSize="20sp"
+        android:layout_alignBaseline="@+id/subMenuName"
+        style="@style/SecondaryTextBlack"
+        android:text="(500)"
+        android:paddingLeft="8dp"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/subMenuPrice"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        style="@style/PrimaryTextBlack"
+        android:textSize="20sp"
+        android:text="120 ден"/>
+
 
 </RelativeLayout>

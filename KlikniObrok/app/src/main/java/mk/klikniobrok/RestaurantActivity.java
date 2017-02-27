@@ -27,6 +27,7 @@ import java.util.List;
 
 import mk.klikniobrok.database.handler.RestaurantDetailsHandler;
 import mk.klikniobrok.database.handler.UserDBHandler;
+import mk.klikniobrok.database.handler.UserDetailsHandler;
 import mk.klikniobrok.fragments.MenuFragment;
 import mk.klikniobrok.fragments.OrderFragment;
 import mk.klikniobrok.fragments.SubMenuFragment;
@@ -49,6 +50,7 @@ public class RestaurantActivity extends AppCompatActivity
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
     private RestaurantDetailsHandler restaurantDetailsHandler;
+    private UserDetailsHandler userDetailsHandler;
     private RestaurantService restaurantService;
 
     private List<String> entryTypes;
@@ -68,6 +70,7 @@ public class RestaurantActivity extends AppCompatActivity
 
         userDbHandler = new UserDBHandler(this, null, null, 1);
         restaurantDetailsHandler = new RestaurantDetailsHandler(this, null, null, 1);
+        userDetailsHandler = new UserDetailsHandler(this, null, null, 1);
 
         restaurantService = new RestaurantServiceImpl();
 
@@ -92,8 +95,10 @@ public class RestaurantActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         View headerLayout =
                 navigationView.inflateHeaderView(R.layout.nav_header_restaurant);
-        AppCompatTextView tokenNavHeader = (AppCompatTextView) headerLayout.findViewById(R.id.navHeaderTokenTextView);
-        tokenNavHeader.setText(restaurantDetailsHandler.getRestaurantDetails().getName());
+        AppCompatTextView userName = (AppCompatTextView) headerLayout.findViewById(R.id.navHeaderUserNameTextView);
+        AppCompatTextView restaurantName = (AppCompatTextView) headerLayout.findViewById(R.id.navHeaderRestaurantNameTextView);
+        userName.setText(userDetailsHandler.getUserDetails().getFirstName() + " " + userDetailsHandler.getUserDetails().getLastName());
+        restaurantName.setText(restaurantDetailsHandler.getRestaurantDetails().getName());
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +180,7 @@ public class RestaurantActivity extends AppCompatActivity
         } else if (id == R.id.logOut) {
             userDbHandler.deleteUserDB(userDbHandler.getUserDB().getToken());
             restaurantDetailsHandler.deleteRestaurantDetails();
+            userDetailsHandler.removeUserDetails();
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(RestaurantActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

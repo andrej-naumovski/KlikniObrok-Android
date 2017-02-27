@@ -23,6 +23,7 @@ public class UserDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_TOKEN = "token";
     public static final String COLUMN_TIME = "time";
     public static final String COLUMN_RESTAURANT = "restaurantName";
+    public static final String COLUMN_TABLE_ID = "tableid";
 
     public UserDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -34,7 +35,8 @@ public class UserDBHandler extends SQLiteOpenHelper {
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_TOKEN + " TEXT, " +
                 COLUMN_TIME + " INTEGER, " +
-                COLUMN_RESTAURANT + " TEXT" +
+                COLUMN_RESTAURANT + " TEXT, " +
+                COLUMN_TABLE_ID + " TEXT" +
                 ");";
         sqLiteDatabase.execSQL(query);
     }
@@ -63,6 +65,19 @@ public class UserDBHandler extends SQLiteOpenHelper {
         long time = date.getTime();
         values.put(COLUMN_TIME, time);
         values.put(COLUMN_RESTAURANT, restaurantName);
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(TABLE_USER, null, values);
+        db.close();
+    }
+
+    public void addUserToDB(String token, String restaurantName, String tableid) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TOKEN, token);
+        Date date = new Date();
+        long time = date.getTime();
+        values.put(COLUMN_TIME, time);
+        values.put(COLUMN_RESTAURANT, restaurantName);
+        values.put(COLUMN_TABLE_ID, tableid);
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_USER, null, values);
         db.close();
@@ -117,6 +132,11 @@ public class UserDBHandler extends SQLiteOpenHelper {
     public void updateUserDB(String token,String restaurantName) {
         deleteUserDB(token);
         addUserToDB(token, restaurantName);
+    }
+
+    public void updateUserDB(String token, String restaurantName, String tableid) {
+        deleteUserDB(token);
+        addUserToDB(token, restaurantName, tableid);
     }
 
     public void deleteUserDB(String token) {

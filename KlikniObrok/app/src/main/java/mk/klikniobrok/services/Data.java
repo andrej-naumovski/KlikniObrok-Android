@@ -63,12 +63,12 @@ public class Data {
     public static HashMap<String, List<String>> getHashMap() {
         HashMap<String, List<String>> hashMap = new HashMap<>();
         List<String> list = new ArrayList<>();
-        list.add("Kur");
-        list.add("Kur");
-        list.add("Kur");
-        list.add("Kur");
-        list.add("Kur");
-        list.add("Kur");
+        list.add("Obrok1");
+        list.add("Obrok2");
+        list.add("Obrok3");
+        list.add("Obrok4");
+        list.add("Obrok5");
+        list.add("Obrok6");
         hashMap.put("Pijaloci1", list);
         hashMap.put("Pijaloci2", list);
         hashMap.put("Pijaloci3", list);
