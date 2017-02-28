@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ import java.util.List;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import mk.klikniobrok.database.handler.RestaurantDetailsHandler;
 import mk.klikniobrok.database.handler.UserDBHandler;
 import mk.klikniobrok.database.handler.UserDetailsHandler;
@@ -30,6 +32,7 @@ import mk.klikniobrok.database.model.UserDB;
 import mk.klikniobrok.fragments.ProgressBarFragment;
 import mk.klikniobrok.fragments.YourLocationFragment;
 import mk.klikniobrok.fragments.listeners.LocationManagerListener;
+import mk.klikniobrok.fragments.listeners.OnItemClickListener;
 import mk.klikniobrok.fragments.listeners.TypefaceChangeListener;
 import mk.klikniobrok.models.Restaurant;
 import mk.klikniobrok.models.User;
@@ -38,9 +41,10 @@ import mk.klikniobrok.services.impl.RestaurantServiceImpl;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.google.zxing.Result;
 
 
-public class LocationActivity extends AppCompatActivity implements TypefaceChangeListener, LocationManagerListener {
+public class LocationActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler, TypefaceChangeListener, LocationManagerListener {
 
     private ProgressBarFragment progressBarFragment;
     private YourLocationFragment yourLocationFragment;
@@ -53,6 +57,9 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
     private User user;
     private RestaurantDetailsHandler restaurantDetailsHandler;
     private UserDetailsHandler userDetailsHandler;
+    private ZXingScannerView scannerView;
+    private AlertDialog.Builder builder;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,12 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         }
         setContentView(R.layout.activity_location);
 
+        builder = new AlertDialog.Builder(this);
+        dialog = builder.create();
+        scannerView = new ZXingScannerView(this);
+        dialog.setTitle("Скенирај QR код на масата");
+        dialog.setView(scannerView);
+        scannerView.setResultHandler(this);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
 
@@ -114,6 +127,8 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
@@ -190,11 +205,8 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
         userdb.setRestaurantName(restaurant.getName());
         userDbHandler.updateUserDB(userdb.getToken(), restaurant.getName());
         restaurantDetailsHandler.addRestaurantDetailsToDB(restaurant);
-        //TODO: Implement QR Code scan.
-        //userDbHandler.updateUserDB(userdb.getToken(), userdb.getRestaurantName(), tableid);
-        Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        dialog.show();
+        scannerView.startCamera();
     }
 
     public boolean isInRestaurant() {
@@ -206,5 +218,25 @@ public class LocationActivity extends AppCompatActivity implements TypefaceChang
 
     public void checkLocationAgain() {
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, progressBarFragment).commitAllowingStateLoss();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        scannerView.stopCamera();
+    }
+
+    @Override
+    public void handleResult(Result result) {
+        scannerView.stopCamera();
+        dialog.dismiss();
+        //TODO: Check if exists in base.
+        Log.d("tableid", result.getText());
+        UserDB userdb = userDbHandler.getUserDB();
+        userdb.setTableId(result.getText());
+        userDbHandler.updateUserDB(userdb.getToken(), userdb.getRestaurantName(), userdb.getTableId());
+        Intent intent = new Intent(LocationActivity.this, RestaurantActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

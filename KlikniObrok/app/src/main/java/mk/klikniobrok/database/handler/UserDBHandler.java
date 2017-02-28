@@ -94,7 +94,8 @@ public class UserDBHandler extends SQLiteOpenHelper {
                 if(c.getString(c.getColumnIndex(COLUMN_TOKEN)).equals(token)) {
                     db.close();
                     return new UserDB(c.getString(c.getColumnIndex(COLUMN_TOKEN)),
-                            c.getLong(c.getColumnIndex(COLUMN_TIME)), c.getString(c.getColumnIndex(COLUMN_RESTAURANT)));
+                            c.getLong(c.getColumnIndex(COLUMN_TIME)), c.getString(c.getColumnIndex(COLUMN_RESTAURANT)),
+                            c.getString(c.getColumnIndex(COLUMN_TABLE_ID)));
                 }
             }
         }
@@ -112,7 +113,8 @@ public class UserDBHandler extends SQLiteOpenHelper {
             if(c.getString(c.getColumnIndex(COLUMN_TOKEN)) != null) {
                 db.close();
                 return new UserDB(c.getString(c.getColumnIndex(COLUMN_TOKEN)),
-                        c.getLong(c.getColumnIndex(COLUMN_TIME)), c.getString(c.getColumnIndex(COLUMN_RESTAURANT)));
+                        c.getLong(c.getColumnIndex(COLUMN_TIME)), c.getString(c.getColumnIndex(COLUMN_RESTAURANT)),
+                        c.getString(c.getColumnIndex(COLUMN_TABLE_ID)));
 
             }
             c.close();

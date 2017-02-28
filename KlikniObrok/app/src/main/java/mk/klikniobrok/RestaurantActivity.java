@@ -1,8 +1,12 @@
 package mk.klikniobrok;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.NumberPicker;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +57,10 @@ public class RestaurantActivity extends AppCompatActivity
     private RestaurantDetailsHandler restaurantDetailsHandler;
     private UserDetailsHandler userDetailsHandler;
     private RestaurantService restaurantService;
+    private com.shawnlin.numberpicker.NumberPicker numberPicker;
+    private View numberPickerView;
+    private AlertDialog.Builder dialog;
+    private AlertDialog alert;
 
     private List<String> entryTypes;
     private HashMap<String, List<Entry>> entries;
@@ -63,6 +72,29 @@ public class RestaurantActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(this.getString(R.string.menu));
         setSupportActionBar(toolbar);
+
+        numberPickerView = getLayoutInflater().inflate(R.layout.number_picker_layout, null);
+        numberPicker = (com.shawnlin.numberpicker.NumberPicker) numberPickerView.findViewById(R.id.numberPicker);
+
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(20);
+
+        numberPicker.setDividerColor(getResources().getColor(R.color.colorPrimary));
+        numberPicker.setDividerColorResource(R.color.colorPrimary);
+
+        numberPicker.setTextColor(getResources().getColor(R.color.colorPrimary));
+        numberPicker.setTextColorResource(R.color.colorPrimary);
+
+
+        dialog = new AlertDialog.Builder(RestaurantActivity.this);
+        dialog.setView(numberPickerView);
+        dialog.setTitle("Одбери количина");
+        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        alert = dialog.create();
 
         menuFragment = new MenuFragment();
         orderFragment = new OrderFragment();
@@ -97,8 +129,10 @@ public class RestaurantActivity extends AppCompatActivity
                 navigationView.inflateHeaderView(R.layout.nav_header_restaurant);
         AppCompatTextView userName = (AppCompatTextView) headerLayout.findViewById(R.id.navHeaderUserNameTextView);
         AppCompatTextView restaurantName = (AppCompatTextView) headerLayout.findViewById(R.id.navHeaderRestaurantNameTextView);
+        AppCompatImageView profilePicture = (AppCompatImageView) headerLayout.findViewById(R.id.profilepicture);
         userName.setText(userDetailsHandler.getUserDetails().getFirstName() + " " + userDetailsHandler.getUserDetails().getLastName());
         restaurantName.setText(restaurantDetailsHandler.getRestaurantDetails().getName());
+        Glide.with(this).load(R.drawable.noprofilepicture_klikniobrok).into(profilePicture);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +249,6 @@ public class RestaurantActivity extends AppCompatActivity
     @Override
     public void onItemClick(String key) {
         new GetEntriesByType().execute(key);
-
     }
 
     @Override
@@ -266,5 +299,11 @@ public class RestaurantActivity extends AppCompatActivity
             toolbar.setTitle(entriesByType.get(0).getEntryType().toString());
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         }
+    }
+
+    @Override
+    public void onSubMenuEntryClick(Entry entry) {
+        numberPicker.setValue(1);
+        alert.show();
     }
 }

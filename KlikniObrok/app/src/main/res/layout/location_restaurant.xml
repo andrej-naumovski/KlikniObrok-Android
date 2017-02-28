@@ -139,7 +139,6 @@
                 android:layout_height="wrap_content"
                 android:isScrollContainer="false"
                 android:id="@+id/recyclerView"
-                android:padding="8dp"
                 android:layout_below="@id/otherLocationsTextView"
                 android:layout_marginTop="8dp">
 

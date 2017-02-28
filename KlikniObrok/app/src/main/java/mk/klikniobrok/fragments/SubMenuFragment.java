@@ -18,6 +18,7 @@ import java.util.List;
 import mk.klikniobrok.R;
 import mk.klikniobrok.RestaurantActivity;
 import mk.klikniobrok.fragments.adapters.SubMenuRecyclerViewAdapter;
+import mk.klikniobrok.fragments.listeners.RecyclerItemClickListener;
 import mk.klikniobrok.models.Entry;
 import mk.klikniobrok.services.Data;
 
@@ -45,7 +46,7 @@ public class SubMenuFragment extends Fragment {
             type = bundle.getString("type");
         }
         Log.d("key", type);
-        List<Entry> array = restaurantActivity.getEntriesByType(type);
+        final List<Entry> array = restaurantActivity.getEntriesByType(type);
 
         RecyclerView.Adapter adapter = new SubMenuRecyclerViewAdapter(array);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(restaurantActivity);
@@ -55,6 +56,14 @@ public class SubMenuFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(restaurantActivity, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                restaurantActivity.onSubMenuEntryClick(array.get(position));
+            }
+        }));
+
         return view;
     }
 }

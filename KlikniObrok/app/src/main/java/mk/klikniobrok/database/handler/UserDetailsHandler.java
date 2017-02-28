@@ -72,7 +72,7 @@ public class UserDetailsHandler extends SQLiteOpenHelper {
 
     public void removeUserDetails() {
         SQLiteDatabase db = getWritableDatabase();
-        String deleteQuery = "DELETE FROM " + TABLE_USER_DETAILS + " WDHERE 1";
+        String deleteQuery = "DELETE FROM " + TABLE_USER_DETAILS + " WHERE 1";
         db.execSQL(deleteQuery);
     }
 }

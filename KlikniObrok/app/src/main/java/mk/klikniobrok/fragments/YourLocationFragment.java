@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import mk.klikniobrok.LocationActivity;
 import mk.klikniobrok.R;
 import mk.klikniobrok.fragments.adapters.RestaurantsRecyclerViewAdapter;
+import mk.klikniobrok.fragments.listeners.RecyclerItemClickListener;
 import mk.klikniobrok.fragments.listeners.TypefaceChangeListener;
 import mk.klikniobrok.models.Restaurant;
 
@@ -42,7 +44,7 @@ public class YourLocationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.location_restaurant, container, false);
 
-        List<Restaurant> array = lActivity.getRestaurants();
+        final List<Restaurant> array = lActivity.getRestaurants();
 
 
         AppCompatTextView titleTextView = (AppCompatTextView) view.findViewById(R.id.titleTextView);
@@ -86,9 +88,17 @@ public class YourLocationFragment extends Fragment {
                     };
                     RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 
+                    recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(manager);
                     recyclerView.setAdapter(adapter);
+
+                    recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(lActivity, new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            lActivity.restaurantActivity(array.get(position));
+                        }
+                    }));
                 }
             }
         } else {

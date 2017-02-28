@@ -9,11 +9,13 @@ public class UserDB {
     private String token;
     private long time;
     private String restaurantName;
+    private String tableId;
 
-    public UserDB(String token, long time, String restaurantName) {
+    public UserDB(String token, long time, String restaurantName, String tableId) {
         this.token = token;
         this.time = time;
         this.restaurantName = restaurantName;
+        this.tableId = tableId;
     }
 
     public int getId() {
@@ -46,5 +48,13 @@ public class UserDB {
 
     public void setRestaurantName(String restaurantName) {
         this.restaurantName = restaurantName;
+    }
+
+    public String getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(String tableId) {
+        this.tableId = tableId;
     }
 }
