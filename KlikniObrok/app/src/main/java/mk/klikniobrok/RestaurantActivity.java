@@ -24,6 +24,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,6 +74,7 @@ public class RestaurantActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(this.getString(R.string.menu));
         setSupportActionBar(toolbar);
+
 
         numberPickerView = getLayoutInflater().inflate(R.layout.number_picker_layout, null);
         numberPicker = (com.shawnlin.numberpicker.NumberPicker) numberPickerView.findViewById(R.id.numberPicker);
@@ -133,6 +136,9 @@ public class RestaurantActivity extends AppCompatActivity
         userName.setText(userDetailsHandler.getUserDetails().getFirstName() + " " + userDetailsHandler.getUserDetails().getLastName());
         restaurantName.setText(restaurantDetailsHandler.getRestaurantDetails().getName());
         Glide.with(this).load(R.drawable.noprofilepicture_klikniobrok).into(profilePicture);
+
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        navigationView.setCheckedItem(navigationView.getMenu().getItem(0).getItemId());
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,10 +280,12 @@ public class RestaurantActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(List<String> s) {
-            entryTypes = s;
-            onNavigationItemSelected(navigationView.getMenu().getItem(0));
-            navigationView.setCheckedItem(navigationView.getMenu().getItem(0).getItemId());
-
+            if(s == null) {
+                new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
+            } else {
+                entryTypes = s;
+                menuFragment.addMenuItems();
+            }
         }
     }
 

@@ -76,7 +76,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                 authToken
         );
         entryTypes = gsonParser.fromJson(jsonArrayEntryTypes, listType);
-        Log.d("entry types", entryTypes.toString());
+//        Log.d("entry types", entryTypes.toString());
         return entryTypes;
     }
 

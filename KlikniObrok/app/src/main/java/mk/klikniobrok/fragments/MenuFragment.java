@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 
@@ -32,6 +33,7 @@ import mk.klikniobrok.services.Data;
 public class MenuFragment extends Fragment {
     private RestaurantActivity restaurantActivity;
     private RestaurantMenuListener restaurantMenuListener;
+    private View view;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -42,25 +44,37 @@ public class MenuFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.menu_fragment_layout, container, false);
+        view = inflater.inflate(R.layout.menu_fragment_layout, container, false);
 
-        final List<String> array = restaurantMenuListener.getEntryTypes();
-
-        final RecyclerView.Adapter adapter = new MenuRecyclerViewAdapter(this, array);
-        RecyclerView.LayoutManager manager = new GridLayoutManager(restaurantActivity, 2);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.menuRecyclerView);
+        recyclerView.setVisibility(View.GONE);
 
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
-
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(restaurantActivity, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        restaurantActivity.onItemClick(array.get(position));
-                    }
-                })
-        );
+        addMenuItems();
 
         return view;
+    }
+
+    public void addMenuItems() {
+        ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.progress_bar);
+        final List<String> array = restaurantMenuListener.getEntryTypes();
+
+        if(array != null) {
+            progressBar.setVisibility(View.GONE);
+            final RecyclerView.Adapter adapter = new MenuRecyclerViewAdapter(this, array);
+            RecyclerView.LayoutManager manager = new GridLayoutManager(restaurantActivity, 2);
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.menuRecyclerView);
+            recyclerView.setVisibility(View.VISIBLE);
+
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(adapter);
+
+            recyclerView.addOnItemTouchListener(
+                    new RecyclerItemClickListener(restaurantActivity, new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override public void onItemClick(View view, int position) {
+                            restaurantActivity.onItemClick(array.get(position));
+                        }
+                    })
+            );
+        }
     }
 }

@@ -22,6 +22,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_restaurant" />
+    <include layout="@layout/content_restaurant"
+        android:id="@+id/includeLayout2"/>
 
 </android.support.design.widget.CoordinatorLayout>
