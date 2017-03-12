@@ -2,9 +2,12 @@ package mk.klikniobrok;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -38,6 +41,7 @@ import mk.klikniobrok.database.handler.UserDetailsHandler;
 import mk.klikniobrok.fragments.MenuFragment;
 import mk.klikniobrok.fragments.OrderFragment;
 import mk.klikniobrok.fragments.SubMenuFragment;
+import mk.klikniobrok.fragments.adapters.PagerTabStripAdapter;
 import mk.klikniobrok.fragments.listeners.OnItemClickListener;
 import mk.klikniobrok.fragments.listeners.RestaurantMenuListener;
 import mk.klikniobrok.fragments.listeners.SubMenuEntriesListener;
@@ -63,6 +67,8 @@ public class RestaurantActivity extends AppCompatActivity
     private View numberPickerView;
     private AlertDialog.Builder dialog;
     private AlertDialog alert;
+    private ViewPager viewPager = null;
+    private PagerTabStrip pagerTabStrip;
 
     private List<String> entryTypes;
     private HashMap<String, List<Entry>> entries;
@@ -74,7 +80,6 @@ public class RestaurantActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(this.getString(R.string.menu));
         setSupportActionBar(toolbar);
-
 
         numberPickerView = getLayoutInflater().inflate(R.layout.number_picker_layout, null);
         numberPicker = (com.shawnlin.numberpicker.NumberPicker) numberPickerView.findViewById(R.id.numberPicker);
@@ -281,7 +286,7 @@ public class RestaurantActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(List<String> s) {
             if(s == null) {
-                new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
+//                new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
             } else {
                 entryTypes = s;
                 menuFragment.addMenuItems();
@@ -301,6 +306,7 @@ public class RestaurantActivity extends AppCompatActivity
             Bundle bundle = new Bundle();
             Log.d("entries", entries.get(entriesByType.get(0).getEntryType().toString()).toString());
             bundle.putString("type", entriesByType.get(0).getEntryType().toString());
+            subMenuFragment = new SubMenuFragment();
             subMenuFragment.setArguments(bundle);
             RestaurantActivity.this.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_restaurant, subMenuFragment).commit();

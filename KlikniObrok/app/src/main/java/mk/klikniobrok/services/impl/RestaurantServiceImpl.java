@@ -46,7 +46,7 @@ public class RestaurantServiceImpl implements RestaurantService {
             restLocation.setLongitude(restaurants.get(i).getLocation().getLongitude());
             restLocation.setLatitude(restaurants.get(i).getLocation().getLatitude());
             float result = location.distanceTo(restLocation);
-            if (result <= 400) {
+            if (result <= 100) {
                 newArray.add(restaurants.get(i));
                 results.add(result);
             }
