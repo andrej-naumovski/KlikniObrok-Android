@@ -2,6 +2,7 @@ package mk.klikniobrok.fragments.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import mk.klikniobrok.fragments.CurrentOrderFragment;
@@ -19,18 +20,17 @@ public class PagerTabStripAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = null;
         if(position == 0 ) {
-            fragment = new CurrentOrderFragment();
+            return new CurrentOrderFragment();
         } else if(position == 1) {
-            fragment = new SentOrdersFragment();
+            return new SentOrdersFragment();
         }
-        return fragment;
+        return null;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class PagerTabStripAdapter extends FragmentStatePagerAdapter {
         if(position == 0 ) {
             return "Моментални нарачки";
         } else {
-            return "Пратени нарачки";
+            return "  Пратени нарачки ";
         }
     }
 }

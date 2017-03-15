@@ -40,13 +40,14 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public List<Restaurant> filterRestaurantsByLocation(List<Restaurant> restaurants, Location location) {
         Location restLocation = new Location("");
+        Log.d("Location:" , location.getLatitude() + " " + location.getLongitude());
         List<Restaurant> newArray = new ArrayList<>();
         List<Float> results = new ArrayList<>();
         for (int i = 0; i < restaurants.size(); i++) {
             restLocation.setLongitude(restaurants.get(i).getLocation().getLongitude());
             restLocation.setLatitude(restaurants.get(i).getLocation().getLatitude());
             float result = location.distanceTo(restLocation);
-            if (result <= 100) {
+            if (result <= 10000) {
                 newArray.add(restaurants.get(i));
                 results.add(result);
             }

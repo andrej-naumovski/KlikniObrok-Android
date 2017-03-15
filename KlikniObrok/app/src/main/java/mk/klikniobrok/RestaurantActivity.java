@@ -286,7 +286,7 @@ public class RestaurantActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(List<String> s) {
             if(s == null) {
-//                new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
+                new GetEntryTypes().execute(userDbHandler.getUserDB().getToken());
             } else {
                 entryTypes = s;
                 menuFragment.addMenuItems();
